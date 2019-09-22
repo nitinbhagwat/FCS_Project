@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Login</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+</head>
+<body>
+
+	{% if form.errors %}
+	<p> There's something wrong with what you have entered. Please try again!</p>
+	{% endif %}
+	
+	<form method="POST" action="/user">
+
+		{% csrf_token %}
+
+		<div class="container">
+			<br>
+			<div class = "form-group row"></div>
+			<label class="col-sm-1 col-form-label"></label>
+			<div class="col-sm-4">
+				<h3>Enter Details</h3>
+			</div>
+		</div>
+		<div class="container">
+			<div class = "form-group row">
+				<label class="col-sm-2 col-form-label">User ID:</label>
+				<div class="col-sm-4">
+					{{ form.uid }}
+				</div>
+			</div>
+
+			<div class = "form-group row">
+				<label class="col-sm-2 col-form-label">Username:</label>
+				<div class="col-sm-4">
+					{{ form.uname }}
+				</div>
+			</div>
+
+			<div class = "form-group row">
+				<label class="col-sm-2 col-form-label">User Email:</label>
+				<div class="col-sm-4">
+					{{ form.uemail }}
+				</div>
+			</div>
+
+			
+			<div class = "form-group row">
+				<label class="col-sm-2 col-form-label">User Contact:</label>
+				<div class="col-sm-4">
+					{{ form.ucontact }}
+				</div>
+			</div>
+
+			<div class = "form-group row">
+				<label class="col-sm-1 col-form-label"></label>
+				<div class="col-sm-4">
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+			</div>
+
+		</div>
+
+
+		
+		
+		
+	</form>
+		
+
+</body>
+</html>
