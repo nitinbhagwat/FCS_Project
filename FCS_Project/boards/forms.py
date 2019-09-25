@@ -1,13 +1,10 @@
 from django import forms
-from boards.models import User
+from django.contrib.auth.decorators import login_required
+from boards.models import Users
 
 class UserForm(forms.ModelForm):
 	class Meta:
-		model = User
-		# fields = "uid, uname, uemail, ucontact"
-		fields = "__all__" # to make form with all fields
+		model = Users
+		fields = "uFirstName", "uLastName", "uEmail", "uContact", "uGender", "uRole", "uDOB", "uPassword" 
+		# fields = "__all__" # to make form with all fields
 		
-			
-			
-			
-

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from boards.forms import UserForm
-from boards.models import User
+from boards.models import Users
 
 # MY CONTROLLER
 
@@ -9,7 +10,7 @@ from django.http import HttpResponse
 def home(request):
     return HttpResponse('Hello, World!')
 
-def user(request):
+def add_user(request):
 	# if executes when we press submit button else not
 	if request.method == "POST":
 		form = UserForm(request.POST)
@@ -24,8 +25,10 @@ def user(request):
 
 	return render(request, "index.html", {'form': form})
 
-def show_details(request):
-	users = User.objects.all()
 
+# login-required not working
+@login_required
+def show_details(request):
+	users = Users.objects.all()
 	return render (request, "show.html", {'users': users})
 	

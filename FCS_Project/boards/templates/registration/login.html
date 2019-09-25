@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Login</title>
-</head>
-<body>
+{% include "theme.html" %}
+
+
+{% block content %}	
 
 	{% if form.errors %}
 	<p> There's something wrong with what you have entered. Please try again!</p>
@@ -22,5 +19,4 @@
 	</form>
 		
 
-</body>
-</html>
+{% endblock %}

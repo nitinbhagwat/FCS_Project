@@ -4,6 +4,8 @@
 	<meta charset="UTF-8">
 	<title>Login</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -11,7 +13,7 @@
 	<p> There's something wrong with what you have entered. Please try again!</p>
 	{% endif %}
 	
-	<form method="POST" action="/user">
+	<form method="POST" action="/add_user">
 
 		{% csrf_token %}
 
@@ -27,31 +29,66 @@
 			<div class = "form-group row">
 				<label class="col-sm-2 col-form-label">User ID:</label>
 				<div class="col-sm-4">
-					{{ form.uid }}
+					{{ form.uId }}
 				</div>
 			</div>
 
 			<div class = "form-group row">
-				<label class="col-sm-2 col-form-label">Username:</label>
+				<label class="col-sm-2 col-form-label">First Name:</label>
 				<div class="col-sm-4">
-					{{ form.uname }}
+					{{ form.uFirstName }}
 				</div>
 			</div>
 
 			<div class = "form-group row">
-				<label class="col-sm-2 col-form-label">User Email:</label>
+				<label class="col-sm-2 col-form-label">Last Name:</label>
 				<div class="col-sm-4">
-					{{ form.uemail }}
+					{{ form.uLastName }}
+				</div>
+			</div>
+
+			<div class = "form-group row">
+				<label class="col-sm-2 col-form-label">Your Email:</label>
+				<div class="col-sm-4">
+					{{ form.uEmail }}
 				</div>
 			</div>
 
 			
 			<div class = "form-group row">
-				<label class="col-sm-2 col-form-label">User Contact:</label>
+				<label class="col-sm-2 col-form-label">Gender:</label>
+				<div class="dropdown">
+				    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select
+				    <span class="caret"></span></button>
+				    <ul class="dropdown-menu">
+				      <li><a href="#">Male</a></li>
+				      <li><a href="#">Female</a></li>
+				    </ul>
+			  	</div>
+			</div>
+			
+			<div class = "form-group row">
+				<label class="col-sm-2 col-form-label">Your Contact:</label>
 				<div class="col-sm-4">
-					{{ form.ucontact }}
+					{{ form.uContact }}
 				</div>
 			</div>
+
+			<div class = "form-group row">
+				<label class="col-sm-2 col-form-label">Your DOB:</label>
+				<div class="col-sm-4">
+					<input id="datepicker" required>
+					{{ form.uDOB }}
+				</div>
+			</div>
+
+			<!-- <div class = "form-group row">
+				<label class="col-sm-2 col-form-label">Your Contact:</label>
+				<div class="col-sm-4">
+					{{ form.uContact }}
+				</div>
+			</div> -->
+
 
 			<div class = "form-group row">
 				<label class="col-sm-1 col-form-label"></label>
@@ -67,6 +104,15 @@
 		
 		
 	</form>
+
+
+	<!-- Scripts Section -->
+
+	<script>
+	    $(function () {
+	      $("#datepicker").datepicker();
+	    });
+  	</script>
 		
 
 </body>
