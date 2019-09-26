@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Line</title>
+    <style>
+        .center {
+            position: absolute;
+            margin-left: auto;
+            margin-right: auto;
+            top: 50%;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+        }
+        .bottomright {
+            position: absolute;
+            bottom: 8px;
+            right: 16px;
+            font-size: 18px;
+        }
+        .bottomleft {
+            position: absolute;
+            bottom: 8px;
+            width: 70%;
+            left: 16px;
+            font-size: 18px;
+        }
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            width: 40%;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+        .container {
+            padding: 2px 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card center">
+        <div class="container">
+            <p id = "tv">Welcome to Django</p>
+        </div>
+    </div>
+
+    <input type="text" id="et" class="bottomleft">
+    <button id="btn" class="bottomright">Click me</button>
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script>
+    $("#btn").click(function () {
+        //https://simpleisbetterthancomplex.com/tutorial/2016/08/29/how-to-work-with-ajax-request-with-django.html
+        $.ajax({
+            url: '/post_msg',
+            data: {
+                'msg': $('#et').val()
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#tv").text( $("#tv").text() + ' ' + $('#et').val() )
+                console.log(data);
+            }
+        });
+
+    });
+  </script>
+</body>
+</html>

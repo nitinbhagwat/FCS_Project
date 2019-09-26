@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'Authentication', # newly added
+    'timeline', # newly added
 ]
 
 AUTH_USER_MODEL = 'Authentication.CustomUser'
