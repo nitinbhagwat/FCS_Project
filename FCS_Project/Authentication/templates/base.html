@@ -2,11 +2,16 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+  <!-- <link href="stylesheet.css" rel="stylesheet" type="text/css"> -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link href='https://fonts.googleapis.com/css?family=Stylish' rel='stylesheet'>
+  {% block link_css %} {% endblock %}
 	<title>{% block title %}Social Site{% endblock %}</title>
 </head>
 
-<style type="text/css">
-	* {box-sizing: border-box;}
+<style>
+  
+* {box-sizing: border-box;}
 
 body { 
   margin: 0;
@@ -61,6 +66,8 @@ body {
   }
 }
 
+
+
 {% block style %}
 
 {% endblock %}
@@ -73,14 +80,37 @@ body {
 	  <a href="#default" class="logo">Social Site</a>
 	  <div class="header-right">
 	    <a class="active" href="/">Home</a>
-	    <a href="#contact">Contact</a>
+	    <a href="#contact">User Guide</a>
 	    <a href="#about">About</a>
 	  </div>
 	</div>
 
-	{% block content %}
+  {% if user.is_authenticated %}
+  <!-- Sidebar -->
+  <div class="w3-sidebar w3-bar-block w3-card" style="width:25%;right:0;font-family: 'Stylish';font-size: 22px; background-color: #f1f1f1">
+    <div>
+      <h3 class="w3-bar-item" style="font-family: 'Stylish';font-size: 35px">Profile</h3>
+    </div>
+    <hr style="border-top: 1px dashed black;">
 
-	{% endblock %}
+    <a href="#" class="w3-bar-item w3-button">Friends</a>
+    <a href="#" class="w3-bar-item w3-button">Timeline</a>
+    <a href="#" class="w3-bar-item w3-button">Transactions</a>
+    <a href="#" class="w3-bar-item w3-button">Groups</a>
+    <a href="{% url 'logout' %}" class="w3-bar-item w3-button">Logout</a>
+  </div>
+  <!-- Sidebar ends -->
+  {% endif %}
+
+  <div style="margin-right:25%">
+    <div class="w3-container">
+
+  	{% block content %}
+
+  	{% endblock %}
+
+    </div>
+  </div>
 	
 </body>
 </html>

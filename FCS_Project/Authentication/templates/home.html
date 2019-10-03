@@ -2,13 +2,74 @@
 
 {% block title %}Home{% endblock %}
 
+{% block link_css %}
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+{% endblock %}
+	
+{% block style %}
+
+	.card {
+	   background-color: #FFFFFF;
+	   width: 95%;
+	   margin: 10px auto 10px auto;
+
+	   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	}
+	.card-content {
+	   padding: 10px 10px 10px 10px;
+	}
+
+{% endblock %}
+
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
+	
+
+	<div>
+		<div class="card">
+			<div class="card-content">
+				<h2 style="margin-left: 5px; text-transform: capitalize;">  Hi {{ user.username }}! </h2>
+				<hr>
+				<table class="table table-striped">
+					<tr>
+						<td>Username: </td>
+						<td> {{user.username}} </td>
+					</tr>
+
+					<tr style="text-transform: capitalize;">
+						<td>Name: </td>
+						<td> {{user.first_name}} {{user.last_name}} </td>
+					</tr>
+
+					<tr style="text-transform: capitalize;">
+						<td>User Type: </td>
+						<td> {{user.role}} </td>
+					</tr>
+
+					<tr>
+						<td>Email: </td>
+						<td> {{user.email}} </td>
+					</tr>
+
+					<tr>
+						<td>Gender: </td>
+						<td> {% if user.gender == True%}
+								Male
+							 {% else %}
+							 	Female
+							 {% endif %}
+						</td>
+					</tr>
+
+				</table>
+			</div>
+		</div>	
+	</div>
+	
+ 	<!-- <p style="margin-left: 5px"><a href="{% url 'logout' %}">Logout</a></p> -->
 {% else %}
   <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a> |
-  <a href="{% url 'signup' %}">signup</a>
+  <a href="{% url 'login' %}"> Login</a> |
+  <a href="{% url 'signup' %}"> Signup</a>
 {% endif %}
 {% endblock %}
