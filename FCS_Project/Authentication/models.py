@@ -22,6 +22,7 @@ class CustomUser(AbstractUser):
 	contact = models.IntegerField(blank = False, null = False)
 	uTransactionNumber = models.IntegerField(blank = True, null = True)
 	uTimelinePrivacy = models.CharField(max_length=20, blank = True, null = True)
+	uWalletBalance = models.FloatField(default = 500.00)
 	# uPassword = models.CharField(max_length = 50)
 
 	def __str__(self):

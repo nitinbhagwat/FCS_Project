@@ -25,6 +25,8 @@ SECRET_KEY = 'ullk!izh7rh!-7kcks!hiwtaei@g!e0h9yrrht3hd3)th_q1)d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
 ALLOWED_HOSTS = []
 
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
 
     'Authentication', # newly added
     'timeline', # newly added
+    'Transactions', # newly added
 ]
 
 AUTH_USER_MODEL = 'Authentication.CustomUser'
@@ -128,5 +131,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/users/login'

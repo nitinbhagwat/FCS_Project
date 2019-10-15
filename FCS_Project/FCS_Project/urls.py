@@ -27,4 +27,5 @@ urlpatterns = [
     path('hello/', hello),
     path('post_msg/', store),
     path('users/', include('django.contrib.auth.urls')),
+    path('transactions/', include('Transactions.urls')),
 ]

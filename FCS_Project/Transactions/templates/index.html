@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Transaction{% endblock %}
+
+{% block content %}
+<h2><strong>Transaction</strong></h2>
+<form method="post">
+  {% csrf_token %}
+  
+	<!-- <div>
+	<h4><strong> From Username:</strong></h4> <h4 style="color: gray"> {{request.user.username}} </h4>
+	</div> -->
+
+	<div>
+	<h4><strong> Your Balance:</strong> {{request.user.uWalletBalance}} </h4>
+	</div>
+
+	{{form.as_p}}
+	<ul class="errorlist"><li>All fields are required.</li></ul>
+	
+  <button type="submit">Pay Now</button>
+</form>
+{% endblock %}
