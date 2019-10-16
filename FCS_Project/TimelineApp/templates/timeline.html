@@ -1,37 +1,18 @@
-<!DOCTYPE html>
-<html>
-    <head lang="en">
-        <title> Social Network </title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-        <script>
-            $(document).ready(function(){
-                var username = $(location).attr("href").split('/').reverse()[1];
+{% extends 'base.html' %}
 
-                function  real_time_fetch() {
-                    $.get("/timeline/get_latest_post/" + username, function(data, status){
-                        let current_post_count = $("#post-creator").siblings()['length'];
-                        let fetch_post_count = data.count; // Do according to status.
-                        if (current_post_count !==  fetch_post_count) {
-                            // $('[name="message"]').val('');
-                            window.location=window.location;
-                        }
-                    });
+{% block title %}Timeline{% endblock %}
 
-                    window.setTimeout(real_time_fetch, 1000);
-                }
-                real_time_fetch();
-            });
-        </script>
+{% block link_css %} 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+{% endblock %}  
 
+{% block style %}
 
-<style type="text/css">
     .card {
         background-color: #FFFFFF;
-        width: 50%;
+        width: 90%;
         margin: 10px auto 10px auto;
 
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -55,39 +36,61 @@
     body {
         background-color: #E9EBEE;
     }
-</style>
 
-    </head>
-    <body>
-        <div id="post-creator" class="card">
-            <div class="card-title">
-                <span>{{ form.message.label_tag }}</span>
+{% endblock %}
+
+
+{% block content %}
+    
+    <div id="post-creator" class="card">
+        <div class="card-title">
+            <span><h4>{{ form.message.label_tag }}</h4></span>
+        </div>
+        <form method="post">
+            <div class="form-group purple-border card-content">
+                {% csrf_token %}
+                {{ form.message }}
             </div>
-            <form method="post">
-                <div class="form-group purple-border card-content">
-                    {% csrf_token %}
-                    {{ form.message }}
-                </div>
-                <div class="card-content">
-                    <button id="post" type="submit" class="card-post-button">Post</button>
-                </div>
-            </form>
+            <div class="card-content">
+                <button id="post" type="submit" class="card-post-button">Post</button>
+            </div>
+        </form>
+    </div>
+
+    {% for post in posts reversed %}
+
+        <div class="card">
+            <div class="card-content">
+                <img src="imgs/male.PNG" class="icon">
+                <span>{{ post.from_user_name }}</span>
+                <span style="float: right"> {{ post.created_at }} </span>
+            </div>
+            <hr>
+            <p class="card-content"> {{ post.posted_message}} </p>
         </div>
 
-        {% for post in posts reversed %}
 
-            <div class="card">
-                <div class="card-content">
-                    <img src="imgs/male.PNG" class="icon">
-                    <span>{{ post.from_user_name }}</span>
-                    <span style="float: right"> {{ post.created_at }} </span>
-                </div>
-                <hr>
-                <p class="card-content"> {{ post.posted_message}} </p>
-            </div>
+    {% endfor %}
 
+{% endblock %}
 
-        {% endfor %}
+{% block script %}
 
-    </body>
-</html>
+$(document).ready(function(){
+    var username = $(location).attr("href").split('/').reverse()[1];
+
+    function  real_time_fetch() {
+        $.get("/timeline/get_latest_post/" + username, function(data, status){
+            let current_post_count = $("#post-creator").siblings()['length'];
+            let fetch_post_count = data.count; // Do according to status.
+            if (current_post_count <  fetch_post_count) {
+                window.location=window.location;
+            }
+        });
+
+        window.setTimeout(real_time_fetch, 1000);
+    }
+    real_time_fetch();
+});
+
+{% endblock %}

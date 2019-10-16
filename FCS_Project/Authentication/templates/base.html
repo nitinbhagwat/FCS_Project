@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- <link href="stylesheet.css" rel="stylesheet" type="text/css"> -->
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link href='https://fonts.googleapis.com/css?family=Stylish' rel='stylesheet'>
@@ -94,7 +95,7 @@ body {
     <hr style="border-top: 1px dashed black;">
 
     <a href="/show_friends" class="w3-bar-item w3-button">Friends</a>
-    <a href="#" class="w3-bar-item w3-button">Timeline</a>
+    <a href="/timeline/user/{{request.user.username}}" class="w3-bar-item w3-button">Timeline</a>
     <a href="/transactions" class="w3-bar-item w3-button">Transactions</a>
     <a href="#" class="w3-bar-item w3-button">Groups</a>
     <a href="{% url 'logout' %}" class="w3-bar-item w3-button">Logout</a>
