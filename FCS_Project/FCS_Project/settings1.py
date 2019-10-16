@@ -51,10 +51,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'Authentication', # newly added
-    'TimelineApp', # newly added
     'Transactions', # newly added
     'friends', # newly added
+    'TimelineApp', # newly added
     'ChatApp', # newly added
+    'PageApp', # newly added
 ]
 
 AUTH_USER_MODEL = 'Authentication.CustomUser'
