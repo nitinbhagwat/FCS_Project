@@ -28,4 +28,6 @@ urlpatterns = [
     path('post_msg/', store),
     path('users/', include('django.contrib.auth.urls')),
     path('transactions/', include('Transactions.urls')),
+    path('friends/', include('friends.urls')),
+    path('show_friends/', include('friends.urls')),
 ]

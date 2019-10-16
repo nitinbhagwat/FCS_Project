@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Friends{% endblock %}
+
+
+
+
+{% block content %}
+
+<h2>MakeNewFriendsOrDropExisting!</h2>
+<table>
+
+    {% for user in users %}
+
+    <tr>
+        <td>
+            <h4 >{{ user.username }}</h4>
+        </td>
+        <td>
+            <a href="{% url 'friends:change_friends' operation='add' pk=user.username  %}">
+                <button type ="button"> Add Friend</button>
+            </a>
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<hr>
+
+<h3> Requests Recieved :D </h3>
+
+<table>
+    {% for friend2 in friends_mine %}
+    <tr>
+        <td>
+            <h4>{{ friend2.sendername }}</h4>
+        </td>
+
+        <td>
+        <a href="{% url 'friends:change_friends' operation='accept' pk=friend2.sendername %}">
+                <button type ="button"> Accept Friend</button>
+            </a>
+
+        </td>
+
+        <td>
+
+        </td>
+
+         <td>
+        <a href="{% url 'friends:change_friends' operation='reject' pk=friend2.sendername %}">
+                <button type ="button"> Reject Friend</button>
+            </a>
+
+        </td>
+    </tr>
+       {% endfor %}
+</table>
+
+<hr>
+
+<h3> Friends :P </h3>
+
+<table>
+    {% for friend in friends %}
+    <tr>
+        <td>
+            <h4>{{ friend.recievername }}</h4>
+        </td>
+
+        <td>
+        <a href="{% url 'friends:change_friends' operation='remove' pk=friend.recievername  %}">
+                <button type ="button"> Remove Friend</button>
+            </a>
+        </td>
+    </tr>
+       {% endfor %}
+</table>
+
+
+<hr>
+<!-- OTP Functionality!!!
+
+<br><br>
+
+<a href="{% url 'friends:change_friends' operation='generate' pk='kawal'  %}">
+                <button type ="button"> Generate OTP</button>
+</a>
+
+
+<br><br>
+<form   method="POST" role="form" >
+    {% csrf_token %}
+          <input type = "text"
+                 name = "myText"
+                 maxlength = "8" value="" />
+<br>
+
+    <input type="submit" value="Submit">
+
+</form> -->
+
+{% endblock %}

@@ -2,6 +2,22 @@
 
 {% block title %}Transaction{% endblock %}
 
+{% block style %}
+
+	.card {
+	   background-color: #FFFFFF;
+	   width: 95%;
+	   margin: 10px auto 10px auto;
+
+	   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	}
+	.card-content {
+	   padding: 10px 10px 10px 10px;
+	}
+
+{% endblock %}
+
+
 {% block content %}
 <h2><strong>Transaction</strong></h2>
 <form method="post">
@@ -15,9 +31,37 @@
 	<h4><strong> Your Balance:</strong> {{request.user.uWalletBalance}} </h4>
 	</div>
 
-	{{form.as_p}}
-	<ul class="errorlist"><li>All fields are required.</li></ul>
+	<div class="card">
+		<div class="card-content">
+			
+			<p> Generate Your OTP:
+				<a href="{% url 'verify_otp' %}">
+					<button type ="button" style="background-color: #4CAF50; color: white;">Generate</button>
+				</a>
+			</p>
+			<ul class="errorlist"><li>Generate your OTP first and check your mail (do not forgot to check your spam folder).</li></ul>
+
+			{{form.as_p}}
+
+			<p> Enter OTP: 
+			<input type = "text"
+			                 name = "myText"
+			                 maxlength = "8" value="" required />
+
+			</p>
+
+			<ul class="errorlist"><li>All fields are required.</li></ul>
+
+			<br>
+			
+		  	<button type="submit">Pay Now</button>
+
+		</div>
+	</div>
 	
-  <button type="submit">Pay Now</button>
+
+	
+
+
 </form>
 {% endblock %}

@@ -30,6 +30,16 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+# settings for sending mail through my gmail account
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'fcsprojectgroup@gmail.com'
+EMAIL_HOST_PASSWORD = 'fcsproject@123'
+EMAIL_PORT = 587
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,6 +53,7 @@ INSTALLED_APPS = [
     'Authentication', # newly added
     'timeline', # newly added
     'Transactions', # newly added
+    'friends', # newly added
 ]
 
 AUTH_USER_MODEL = 'Authentication.CustomUser'
