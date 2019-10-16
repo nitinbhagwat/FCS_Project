@@ -51,9 +51,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'Authentication', # newly added
-    'timeline', # newly added
+    'TimelineApp', # newly added
     'Transactions', # newly added
     'friends', # newly added
+    'ChatApp', # newly added
 ]
 
 AUTH_USER_MODEL = 'Authentication.CustomUser'
@@ -96,8 +97,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fcs_db',
-        'USER': 'Ntn',
-        'PASSWORD': 'Ntn@SQL1',
+        'USER': 'root',
+        'PASSWORD': 'ankur',
         'HOST': 'localhost',
         'PORT': '3306',
     }

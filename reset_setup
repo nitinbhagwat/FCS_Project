@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Setup Virtual environment.
+rm -rf venv
+python3 -m venv venv
+source venv/bin/activate
+pip install django==2.2.6
+# sudo apt-get install python3-dev libmysqlclient-dev
+pip install mysqlclient
+pip install pyotp
+
+# Update settings.py file.
+sed -i 's/Ntn@SQL1/ankur/g' ./FCS_Project/FCS_Project/settings.py # https://askubuntu.com/questions/20414/find-and-replace-text-within-a-file-using-commands
+sed -i 's/Ntn/root/g' ./FCS_Project/FCS_Project/settings.py
+
+# Reset the migrations.
+find . -path "*/FCS_Project/*/migrations/*.py" -not -name "__init__.py" -delete # Delete all migration files. # https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html
+mysql -u "root" "-pankur" -Bse "DROP DATABASE IF EXISTS fcs_db;CREATE DATABASE IF NOT EXISTS fcs_db;" # For more info: https://stackoverflow.com/questions/8055694/how-to-execute-a-mysql-command-from-a-shell-script; https://stackoverflow.com/questions/838978/how-to-check-if-mysql-database-exists
+
+# Create Tables.
+python ./FCS_Project/manage.py makemigrations
+python ./FCS_Project/manage.py migrate
+deactivate
+

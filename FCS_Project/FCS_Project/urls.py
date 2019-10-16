@@ -17,15 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
 
-from timeline.views import hello
-from timeline.views import store
+
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('admin/', admin.site.urls),
     path('users/', include('Authentication.urls')),
-    path('hello/', hello),
-    path('post_msg/', store),
+    path('timeline/', include('TimelineApp.urls')),
+    path('chat/', include('ChatApp.urls')),
     path('users/', include('django.contrib.auth.urls')),
     path('transactions/', include('Transactions.urls')),
     path('friends/', include('friends.urls')),

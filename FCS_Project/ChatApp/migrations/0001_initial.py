@@ -12,16 +12,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Transactions',
+            name='Chat',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('from_username', models.CharField(max_length=20)),
-                ('to_username', models.CharField(max_length=20)),
-                ('amount', models.FloatField()),
+                ('from_user_name', models.CharField(max_length=10)),
+                ('to_user_name', models.CharField(max_length=10)),
+                ('chat_message', models.CharField(max_length=100)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
-            options={
-                'db_table': 'Transactions',
-            },
         ),
     ]

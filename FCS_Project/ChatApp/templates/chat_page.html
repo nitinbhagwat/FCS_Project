@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <style>
+            body {
+            margin: 0;
+            background-color:#E5DDD5; 
+            }
+
+            ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 25%;
+            background-color: #f1f1f1;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+            }
+
+            li a {
+            display: block;
+            color: #000;
+            padding: 8px 16px;
+            text-decoration: none;
+            }
+
+            li a.active {
+            background-color: #4CAF50;
+            color: white;
+            }
+
+            li a:hover:not(.active) {
+            background-color: #555;
+            color: white;
+            }
+
+            .message-box {
+                max-width: 50%;
+                display:inline-block;
+                background-color: #FFFFFF;
+                border-radius: 15px;
+                padding: 4px 10px 4px 10px;
+            }
+
+            .sender {
+                float: right;
+                background-color: #DCF8C6;
+            }
+
+            .chat-input {
+                width: 85%;
+            }
+
+            .chat-button {
+                right: 1%;
+            }
+
+            .chat-input-button-container {
+                position: fixed;
+                bottom: 0;
+                left: 25%;
+
+                width: 75%;
+                overflow:auto; 
+                padding: 10px 20px;
+                background-color: #EFEFEF;
+            }
+
+            .chat-header {
+                position: fixed;
+                top: 0;
+                left: 25%;
+                margin-top: 0px;
+
+                width: 75%;
+                overflow:hidden;
+                padding: 10px 20px;
+                background-color: #EFEFEF;
+            }
+
+            .message-container {
+                margin-top: 10px ;
+            }
+
+            .message-text {
+                margin-bottom: 10px;
+            }
+
+            .message-time {
+                font-size: 70%;
+                color: #9a9a9a;
+            }
+
+            .chat-area {
+                margin-left:25%;
+                padding:50px 16px 70px 16px;
+                overflow:auto;
+            }
+
+        </style>
+
+        <script>
+
+            $(document).ready(function(){
+                var username = $(location).attr("href").split('/').reverse()[1];
+
+                function  real_time_fetch() {
+                    $.get("/chat/get_chats_count/" + username, function(data, status){
+                        let current_chat_count = $('.message-container').length;
+                        let fetch_chat_count = data.count; // Do according to status.
+                        if (current_chat_count <  fetch_chat_count) {
+                            window.location=window.location;
+                        }
+                    });
+
+                    window.setTimeout(real_time_fetch, 1000);
+                }
+                real_time_fetch();
+            });
+        </script>
+
+    </head>
+    <body><!-- onload="window.location='#just-for-scrolling';">-->
+
+        <ul>
+            <li><a class="active" href="#home">Home</a></li>
+            <li><a href="#news">News</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+
+        <header class="chat-header" style="margin-bottom: 45px; margin-top: 0px;">
+            <span>Person name</span>
+        </header>
+
+        <div id="chat-area" class="chat-area">
+            <div>
+            {% for chat in chats %}
+
+                {% if who != chat.from_user_name %}
+                    <div class="message-container">
+                        <div class="message-box" style="overflow: hidden;">
+                            <div class="message-text">
+                                <span>{{ chat.chat_message }}</span> <!--This will change-->
+                            </div>
+                            <div class="message-time" style="float: right;">
+                                <span>{{ chat.created_at }}</span> <!--This will change-->
+                            </div>
+                        </div>
+                    </div>
+
+                {% else %}
+
+                    <div class="message-container" style="overflow: hidden;">
+                        <div class="message-box sender" style="overflow: hidden;">
+                            <div class="message-text">
+                                <span>{{ chat.chat_message }}</span>
+                            </div>
+                            <div class="message-time" style="float: right;">
+                                <span>{{ chat.created_at }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+                <div id="just-for-scrolling"></div>
+
+            </div>
+        </div>
+
+        <div class="chat-input-button-container">
+            <form method="post">
+<!--                    <input type="text" class="chat-input" name="message">-->
+                {% csrf_token %}
+                {{ form.message }}
+                <button id="send-button" type="submit" class="chat-button">Send</button>
+            </form>
+        </div>
+
+    </body>
+</html>
