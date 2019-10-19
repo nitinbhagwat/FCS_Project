@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, render_to_response
 from django.views.generic import TemplateView
-
+from django.db.models import Subquery
 from django.contrib.auth.models import User
 # Create your views here.
 import Authentication
@@ -17,7 +17,9 @@ from django.contrib.auth.decorators import login_required
 def friends_view(request):
     global original_password
 
-    users = CustomUser.objects.exclude(username=request.user.username)
+    # users = CustomUser.objects.exclude(username=request.user.username)
+    users1 = Friend.objects.filter(sendername=request.user.username)
+    users = CustomUser.objects.exclude(username__in=Subquery(users1.values('recievername'))).exclude(username=request.user.username)
     friends = Friend.objects.filter(sendername=request.user.username).exclude(status=0).exclude(status=-1)
     friends_mine = Friend.objects.filter(recievername=request.user.username).exclude(status=-1).exclude(status=1)
 

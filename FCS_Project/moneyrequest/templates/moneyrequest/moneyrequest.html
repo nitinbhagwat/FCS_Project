@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Timeline{% endblock %}
+
+{% block style %}
+
+    .card {
+       background-color: #FFFFFF;
+       width: 95%;
+       margin: 10px auto 10px auto;
+
+       box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    }
+    .card-content {
+       padding: 10px 10px 10px 10px;
+    }
+
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-content">
+            <h3> List Of Friends who can Help you with Money</h3>
+            <hr>
+            {% if not cansend %}
+            <p> You cannot request money as you do not have any friend or you have pending money request. </p>
+            {% endif %}
+            <table>
+
+                {% for var1 in cansend %}
+                <tr>
+                    <td>
+                        <h4 >{{ var1.recievername }}</h4>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+        </div>
+    </div>
+    
+    {% if cansend %}
+        <div class="card">
+            <div class="card-content">
+                <h3> Make a Request </h3>
+                <hr>
+                            
+                <form   method="POST" role="form" >
+                    {% csrf_token %}
+
+                    <input type = "text" name = "myText" maxlength = "20" value=""  placeholder="Enter friend name"/>
+                    <br>
+                    <input type="number" step="1" name = "priceText" value="100"/>
+                    <br>
+                    <input type="submit" value="Request Money">
+                    
+                </form>
+                
+            </div>
+        </div>
+    {% endif %}
+
+    
+    <div class="card">
+        <div class="card-content">
+            <h3> Requests Recieved for Money </h3>
+            <hr>
+            {% if not requestrecieved %}
+            <p> You have no pending money request. </p>
+            {% endif %}
+            <table>
+                {% for var2 in requestrecieved %}
+                    <tr>
+                        <td>
+                            <h4>{{ var2.sendername }}</h4>
+                        </td>
+
+                        <td>
+
+                        </td>
+
+                        <td>
+                            <h4> needs amount worth Rs {{ var2.amount }} </h4>
+
+                        </td>
+
+                        <td>
+                        <a href="{% url 'moneyrequest:request_friends' operation='accept' pk=var2.sendername money=100 %}">
+                                <button type ="submit"> Send Money</button>
+                            </a>
+
+                        </td>
+
+                        <td>
+
+                        </td>
+
+                         <td>
+                        <a href="{% url 'moneyrequest:request_friends' operation='reject' pk=var2.sendername  money=100%}">
+                                <button type ="button"> Reject Request</button>
+                            </a>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    
+
+    
+{% endblock %}
+
+

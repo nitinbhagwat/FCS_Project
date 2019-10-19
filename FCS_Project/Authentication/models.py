@@ -2,6 +2,7 @@ from django.db import models
 import pyotp
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
+from datetime import datetime
 # Create your models here.
 
 class CustomUser(AbstractUser):
@@ -34,6 +35,7 @@ class OTP(models.Model):
 	email = models.EmailField(default="")
 	status = models.IntegerField(default=0)
 	onetimepassword = models.IntegerField(default="")
+	generationtime = models.DateTimeField(default = "")
 
 	class Meta:
 		unique_together = (("email", "status"),)
@@ -46,7 +48,8 @@ class OTP(models.Model):
 
 		varid = OTP.objects.count()
 		varid = varid+1
-		varA = OTP(varid, current_user_email, 0, password)
+		time_now = datetime.now()
+		varA = OTP(varid, current_user_email, 0, password, time_now)
 		try:
 			varA.save()
 		except:

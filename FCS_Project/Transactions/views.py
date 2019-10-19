@@ -9,6 +9,8 @@ from django.db import transaction
 from Authentication.models import OTP
 from django.core.mail import send_mail
 from django.conf import settings
+from datetime import datetime, time, timedelta
+import pytz
 
 # Create your views here.
 
@@ -110,6 +112,7 @@ def make_transaction(request):
 
 							for var in seekpassword:
 								original_otp = var.onetimepassword
+								time_then = var.generationtime
 							
 							# print("|", otp_entered, "|\n|", original_password, "|")
 							# print (type(otp_entered))
@@ -117,22 +120,34 @@ def make_transaction(request):
 
 							# Func_otp(int(otp_entered), int(original_password), request.user.email)
 
+							utc = pytz.UTC
 							if int(otp_entered) == int(original_otp):
 								print ("OTP Verified")
-								with transaction.atomic():
-									to_user = CustomUser.objects.select_for_update().get(username = to_username)
-									to_user.uWalletBalance += amount
-									# to_user.save(commit = False)
+								table_expired_datetime = time_then + timedelta(minutes = 1)
+								time_now = datetime.now()
 
-									from_user = CustomUser.objects.select_for_update().get(username = from_username)
-									from_user.uWalletBalance -= amount
-									# from_user.save(commit = False)
+								expired_on = table_expired_datetime.replace(tzinfo = utc)
+								checked_on = time_now.replace(tzinfo = utc)
 
-									to_user.save()
-									from_user.save()
+								if expired_on < checked_on:
 									OTP.verified_OTP(request.user.email)
+									return HttpResponse ("OTP time expired. Please generate OTP again and then try again.")
 
-								return redirect('/')
+								else: 
+									with transaction.atomic():
+										to_user = CustomUser.objects.select_for_update().get(username = to_username)
+										to_user.uWalletBalance += amount
+										# to_user.save(commit = False)
+
+										from_user = CustomUser.objects.select_for_update().get(username = from_username)
+										from_user.uWalletBalance -= amount
+										# from_user.save(commit = False)
+
+										to_user.save()
+										from_user.save()
+										OTP.verified_OTP(request.user.email)
+
+									return redirect('/')
 							else:
 								print ('OTP Incorrect')
 								return HttpResponse ("OTP is not verified.")

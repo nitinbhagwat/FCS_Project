@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'TimelineApp', # newly added
     'ChatApp', # newly added
     'PageApp', # newly added
+    'groups', # newly added
+    'moneyrequest', # newly added
 ]
 
 AUTH_USER_MODEL = 'Authentication.CustomUser'

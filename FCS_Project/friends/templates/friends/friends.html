@@ -2,85 +2,114 @@
 
 {% block title %}Friends{% endblock %}
 
+{% block style %}
 
+    .card {
+       background-color: #FFFFFF;
+       width: 95%;
+       margin: 10px auto 10px auto;
+
+       box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    }
+    .card-content {
+       padding: 10px 10px 10px 10px;
+    }
+
+{% endblock %}
 
 
 {% block content %}
 
-<h2>MakeNewFriendsOrDropExisting!</h2>
-<table>
+<div class="card">
+    <div class="card-content">
+        <h2>Friend Suggestions!</h2>
+        <hr>
+        {% if not users %}
+        <p> No Suggestions </p>
+        {% endif %}
+        <table>
+            {% for user in users %}
+            <tr>
+                <td>
+                    <h4 >{{ user.username }}</h4>
+                </td>
+                <td>
+                    <a href="{% url 'friends:change_friends' operation='add' pk=user.username  %}">
+                        <button type ="button"> Add Friend</button>
+                    </a>
+                </td>
+            </tr>
 
-    {% for user in users %}
+            {% endfor %}
 
-    <tr>
-        <td>
-            <h4 >{{ user.username }}</h4>
-        </td>
-        <td>
-            <a href="{% url 'friends:change_friends' operation='add' pk=user.username  %}">
-                <button type ="button"> Add Friend</button>
-            </a>
-        </td>
-    </tr>
+        </table>
+    </div>
+</div>
 
-    {% endfor %}
+<div class="card">
+    <div class="card-content">
+        <h3> Friend Requests </h3>
+        <hr>
+        {% if not friends_mine %}
+        <p> No pending requests. </p>
+        {% endif %}
+        <table>
+            {% for friend2 in friends_mine %}
+            <tr>
+                <td>
+                    <h4>{{ friend2.sendername }}</h4>
+                </td>
 
-</table>
+                <td>
+                <a href="{% url 'friends:change_friends' operation='accept' pk=friend2.sendername %}">
+                        <button type ="button"> Accept Friend</button>
+                    </a>
 
-<hr>
+                </td>
 
-<h3> Requests Recieved :D </h3>
+                <td>
 
-<table>
-    {% for friend2 in friends_mine %}
-    <tr>
-        <td>
-            <h4>{{ friend2.sendername }}</h4>
-        </td>
+                </td>
 
-        <td>
-        <a href="{% url 'friends:change_friends' operation='accept' pk=friend2.sendername %}">
-                <button type ="button"> Accept Friend</button>
-            </a>
+                 <td>
+                <a href="{% url 'friends:change_friends' operation='reject' pk=friend2.sendername %}">
+                        <button type ="button"> Reject Friend</button>
+                    </a>
 
-        </td>
+                </td>
+            </tr>
+               {% endfor %}
+        </table>
 
-        <td>
-
-        </td>
-
-         <td>
-        <a href="{% url 'friends:change_friends' operation='reject' pk=friend2.sendername %}">
-                <button type ="button"> Reject Friend</button>
-            </a>
-
-        </td>
-    </tr>
-       {% endfor %}
-</table>
-
-<hr>
-
-<h3> Friends :P </h3>
-
-<table>
-    {% for friend in friends %}
-    <tr>
-        <td>
-            <h4>{{ friend.recievername }}</h4>
-        </td>
-
-        <td>
-        <a href="{% url 'friends:change_friends' operation='remove' pk=friend.recievername  %}">
-                <button type ="button"> Remove Friend</button>
-            </a>
-        </td>
-    </tr>
-       {% endfor %}
-</table>
+    </div>
+</div>
 
 
-<hr>
+<div class="card">
+    <div class="card-content">
+        <h3> Friends </h3>
+        <hr>
+        {% if not friends %}
+        <p> You have no Friends :( </p>
+        {% endif %}
+        <table>
+            {% for friend in friends %}
+            <tr>
+                <td>
+                    <h4>{{ friend.recievername }}</h4>
+                </td>
+
+                <td>
+                <a href="{% url 'friends:change_friends' operation='remove' pk=friend.recievername  %}">
+                        <button type ="button"> Remove Friend</button>
+                    </a>
+                </td>
+            </tr>
+               {% endfor %}
+        </table>
+    </div>
+</div>
+
 <!-- OTP Functionality!!!
 
 <br><br>

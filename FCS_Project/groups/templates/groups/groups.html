@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}Groups{% endblock %}
+
+{% block style %}
+
+    .card {
+       background-color: #FFFFFF;
+       width: 95%;
+       margin: 10px auto 10px auto;
+
+       box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    }
+    .card-content {
+       padding: 10px 10px 10px 10px;
+    }
+
+{% endblock %}
+
+{% block content %}
+    {% for var5 in extra_info %}
+    {% if not var5.role == 'casual' %}
+
+        <div class="card">
+            <div class="card-content">
+                <h3> Create Group </h3>
+                <hr>
+                <form   method="POST" role="form" >
+                    {% csrf_token %}
+
+                    <input type = "text" name = "myText" maxlength = "20" value=""  placeholder="Enter group name"/>
+                    <br>
+                    <input type="number" step="1" name = "priceText" value="100"/>
+
+                <br>
+                    <input type="submit" value="Create Group">
+
+                </form>
+            </div>
+        </div>
+    
+
+    {% endif %}
+    {% endfor %}
+
+    
+    <div class="card">
+        <div class="card-content">
+            <h3> Join Group </h3>
+            <hr>
+            {% if not group_display1 %}
+            <p> No groups available. </p>
+            {% endif %}
+            <table>
+
+                {% for var1 in group_display1 %}
+
+                <tr>
+                    <td>
+                        <h4 >{{ var1.group_name }}</h4>
+                    </td>
+
+                    <td>
+
+                    </td>
+                    <td>
+                        <h4 >Membership Cost : Rs {{ var1.price }}</h4>
+                    </td>
+
+                     <td>
+                        <a href="{% url 'groups:group_operations'  operation='join' variable=var1.group_name pk=var1.group_name %}">
+                            <button type ="button"> Join Group </button>
+                        </a>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+    </div>
+
+
+
+    <div class="card">
+        <div class="card-content">
+            <h3> Join Requests </h3>
+            <hr>
+            {% if not recieved_requests1 %}
+            <p> No pending request. </p>
+            {% endif %}
+            <table>
+
+                {% for var2 in recieved_requests1 %}
+
+                <tr>
+                    <td>
+                        <h4 >{{ var2.member_name }}</h4>
+                    </td>
+
+                     <td>
+                         <h4>{{ var2.group_name }}</h4>
+                    </td>
+
+                     <td>
+                        <a href="{% url 'groups:group_operations'  operation='accept' variable=var2.group_name pk=var2.member_name %}">
+                            <button type ="button"> Accept Request </button>
+                        </a>
+                    </td>
+
+                    <td>
+
+                    </td>
+
+                    <td>
+                    <a href="{% url 'groups:group_operations'  operation='reject' variable=var2.group_name pk=var2.member_name %}">
+                            <button type ="button"> Reject Request</button>
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+    </div>
+    
+
+
+    <div class="card">
+        <div class="card-content">
+            <h3> My Groups </h3>
+            <hr>
+            
+            {% if not mygroups %}
+            <p> You have not enrolled in any group. </p>
+            {% endif %}
+
+            <table>
+
+                {% for var3 in mygroups %}
+
+                <tr>
+                    <td>
+                        <h4 >{{ var3.group_name }}</h4>
+                    </td>
+
+                     <td>
+                        <a href="{% url 'groups:group_operations'  operation='leave' variable=var3.group_name pk=var3.group_name %}">
+                            <button type ="button"> Leave Group </button>
+                        </a>
+                    </td>
+
+                    <td>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+    </div>
+    
+    
+    {% if ownedgroups %}
+        <div class="card">
+            <div class="card-content">
+                <h3> Owned Groups </h3>
+                <hr> 
+                <table>
+                    {% for var4 in ownedgroups %}
+                        {% if not var5.role == 'casual' %}
+
+                            <tr>
+                                <td>
+                                    <h4 >{{ var4.group_name }}</h4>
+                                </td>
+
+                                 <td>
+                                    <a href="{% url 'groups:group_operations'  operation='delete' variable=var4.group_name pk=var4.group_name %}">
+                                        <button type ="button"> Delete Group </button>
+                                    </a>
+                                </td>
+
+                                <td>
+
+                                </td>
+
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    {% endif %} 
+    
+
+    
+{% endblock %}
+
+
