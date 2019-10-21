@@ -1,10 +1,10 @@
 from django.db import models
+from Transactions.views import send_money
 
 
 # Create your models here.
 
 class Group(models.Model):
-    gid = models.IntegerField(default="")
     group_name = models.CharField(max_length=20, default="", primary_key=True)
     admin_name = models.CharField(max_length=20, default="")
     price = models.IntegerField(default=0)
@@ -16,10 +16,7 @@ class Group(models.Model):
     @classmethod
     def create(cls, name_entered, admin_name, price_entered):
 
-        var2 = Group.objects.count()
-        var2 = var2 + 1
-
-        var1 = Group(var2, name_entered, admin_name, price_entered)
+        var1 = Group(name_entered, admin_name, price_entered)
 
         try:
             var1.save()
@@ -33,8 +30,8 @@ class Group(models.Model):
 
 
 class Joined_group(models.Model):
-    jid = models.IntegerField(default="")
-    group_name = models.CharField(max_length=20, default="", primary_key=True)
+    firstfield = models.CharField(max_length=50, default="", primary_key=True)
+    group_name = models.CharField(max_length=20, default="")
     member_name = models.CharField(max_length=20, default="")
     status = models.IntegerField(default=0)
 
@@ -44,9 +41,10 @@ class Joined_group(models.Model):
 
     @classmethod
     def join(cls, member_name, group_name):
-        var2 = Joined_group.objects.count()
-        var2 = var2 + 1
-        var1 = Joined_group(var2, group_name, member_name, 0)
+        vara = member_name
+        varb = group_name
+
+        var1 = Joined_group(vara+varb, group_name, member_name, 0)
 
         try:
             var1.save()
@@ -56,9 +54,23 @@ class Joined_group(models.Model):
     @classmethod
     def accept(cls, group_name, member_name):
         Joined_group.objects.all().filter(member_name=member_name).filter(group_name=group_name).delete()
-        var2 = Joined_group.objects.count()
-        var2 = var2 + 1
-        var1 = Joined_group(var2, group_name, member_name, 1)
+
+        info = Group.objects.filter(group_name = group_name)
+        amount = 0
+        to_username = ""
+        for var in info:
+            amount = var.price
+            to_username = var.admin_name
+        from_username = member_name
+
+        exception = send_money (amount, to_username, from_username, None)
+        if exception:
+            return HttpResponse (exception)
+
+        vara = member_name
+        varb = group_name
+
+        var1 = Joined_group(vara+varb, group_name, member_name, 1)
         try:
             var1.save()
         except:
@@ -77,3 +89,19 @@ class Joined_group(models.Model):
     def deletes(cls, group_name):
         Joined_group.objects.all().filter(group_name=group_name).delete()
 
+    @classmethod
+    def deletesmember(cls, group_name, member_name):
+        Joined_group.objects.all().filter(group_name=group_name).filter(member_name=member_name).delete()
+
+    @classmethod
+    def addmember(cls, group_name, member_name):
+        Joined_group.objects.all().filter(group_name=group_name).filter(member_name=member_name).delete()
+
+        vara = member_name
+        varb = group_name
+
+        var1 = Joined_group(vara+varb, group_name, member_name, 1)
+        try:
+            var1.save()
+        except:
+            pass

@@ -26,6 +26,15 @@
 	
 
 	<div>
+		
+		{% if message %}
+		<div class="card">
+			<div class="card-content">
+				<p> {{message}} </p>
+			</div>
+		</div>
+		{% endif %}
+
 		<div class="card">
 			<div class="card-content">
 				<h2 style="margin-left: 5px; text-transform: capitalize;">  Hi {{ user.username }}! </h2>
@@ -45,6 +54,13 @@
 						<td>User Type: </td>
 						<td> {{user.role}} </td>
 					</tr>
+
+					{% if user.role == 'premium' %}
+					<tr style="text-transform: capitalize;">
+						<td>Plan: </td>
+						<td> {{user.premium_type}} </td>
+					</tr>
+					{% endif %}
 
 					<tr>
 						<td>Email: </td>

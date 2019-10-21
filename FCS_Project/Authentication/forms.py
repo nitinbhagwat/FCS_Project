@@ -6,7 +6,7 @@ from .models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
 	class Meta:
 		model = CustomUser
-		fields = ["username", "first_name", "last_name", "email", "gender", "role", "age", "contact"]
+		fields = ["username", "first_name", "last_name", "email", "gender", "role", "age"]
 		# fields = "__all__" # to make form with all fields
 
 
@@ -14,3 +14,10 @@ class CustomUserChangeForm(UserChangeForm):
 	class Meta(object):
 		model = CustomUser
 		fields = ('username', 'email')
+
+class ChangePremiumPlanForm(forms.ModelForm):
+	class Meta:
+		model = CustomUser
+		fields = 'premium_type', 
+			
+		

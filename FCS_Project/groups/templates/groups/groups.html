@@ -28,7 +28,7 @@
                 <form   method="POST" role="form" >
                     {% csrf_token %}
 
-                    <input type = "text" name = "myText" maxlength = "20" value=""  placeholder="Enter group name"/>
+                    <input type = "text" name = "myText" maxlength = "20" value=""  placeholder="Enter group name" required/>
                     <br>
                     <input type="number" step="1" name = "priceText" value="100"/>
 
@@ -200,10 +200,145 @@
                 </table>
             </div>
         </div>
-    {% endif %} 
+    {% endif %}
+
+
+<div class="card">
+        <div class="card-content">
+           <h3> Delete Group Members </h3>
+            <hr>
+
+        <table>
+        
+            {% for var5 in manage_info %}
+        
+            <tr>
+                <td>
+                    <h4 >{{ var5.group_name }}</h4>
+        
+                </td>
+        
+            </tr>
+            <tr>
+        
+                 {% for var6 in manage_info %}
+                {% if var6.group_name == var5.group_name %}
+                <td>
+                    <h4 >{{ var6.member_name }}</h4>
+                </td>
+        
+        
+                 <td>
+                    <a href="{% url 'groups:group_operations'  operation='deletemember' variable=var6.group_name pk=var6.member_name %}">
+                        <button type ="button"> Delete Member </button>
+                    </a>
+                </td>
+        
+                {% endif %}
+                {% endfor %}
+        
+                <td>
+        
+                </td>
+        
+            </tr>
+        
+            {% endfor %}
+        
+        </table>
+        
+</div>
+</div>
+
+<div class="card">
+        <div class="card-content">
+           <h3> Add Members To Group </h3>
+            <hr>
+
+<table>
+
+    {% for var5 in manage_info %}
+
+    <tr>
+
+        {% for var6 in manage_info %}
+
+                {% if var6.group_name == var5.group_name %}
+
+                            {% for var7 in manage %}
+
+                                {% if  var7.username == var6.member_name %}
+
+                                 {% else %}
+
+                                         <td>
+                                        <h4 >{{ var5.group_name }}</h4>
+                                         </td>
+
+                                        <td>
+                                            <h4 >{{ var7.username }}</h4>
+                                        </td>
+
+
+                                         <td>
+                                            <a href="{% url 'groups:group_operations'  operation='addmember' variable=var6.group_name pk=var7.username %}">
+                                                <button type ="button"> Add Member </button>
+                                            </a>
+                                        </td>
+
+                                {% endif %}
+
+                            {% endfor %}
+                {% endif %}
+    </tr>
+
+        {% endfor %}
+
+    {% endfor %}
+
+</table>
+
+</div>
+</div>
+
+<table>
+
+    {% for var4 in manage2 %}
+
+    <tr>
+        <td>
+            <h4 >{{ var4.group_name }}</h4>
+        </td>
+    </tr>
+
+
+        {% for var5 in manage %}
+    <tr>
+
+        <td>
+            <h4 >{{ var5.username }}</h4>
+        </td>
+
+
+
+         <td>
+            <a href="{% url 'groups:group_operations'  operation='addmember' variable=var4.group_name pk=var5.username %}">
+                <button type ="button"> Add Member </button>
+            </a>
+        </td>
+
+        <td>
+
+        </td>
+
+    </tr>
+    {% endfor %}
+    {% endfor %}
+
+
+</table>
+
     
 
     
 {% endblock %}
-
-

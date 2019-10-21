@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Change Plan{% endblock %}
+
+{% block style %}
+
+	.card {
+	   background-color: #FFFFFF;
+	   width: 95%;
+	   margin: 10px auto 10px auto;
+
+	   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	}
+	.card-content {
+	   padding: 10px 10px 10px 10px;
+	}
+
+{% endblock %}
+
+{% block content %}
+
+<h2><strong>Transaction</strong></h2>
+<form method="post">
+	{% csrf_token %}
+	<div>
+		<h4 style="text-transform: capitalize;"><strong> Current Plan :</strong> {{request.user.premium_type}} </h4>
+		<h4><strong> Current Balance :</strong> {{request.user.uWalletBalance}} </h4>
+	</div>
+	
+	<div class="card">
+		<div class="card-content">
+			{% if request.user.premium_type != 'platinum' %}
+			{{form.as_p}}
+			<ul class="errorlist"><li>All fields are required.</li></ul>
+			<table border="1">
+			<tr>
+				<th>Plans </td>
+				<th> Payment </td>
+			</tr>
+			<tr>
+				<td>Silver</td> <td>Rs 50 pm</td>
+			</tr>
+			<tr>
+				<td>Gold</td> <td>Rs 100 pm</td>
+			</tr>
+			<tr>
+				<td>Platinum</td> <td>Rs 150 pm</td>
+			</tr>
+			</table>
+			<br>
+			<button type="submit">Change</button>
+			{% else %}
+				<p> You cannot upgrade your plan as you are already a Premium member. </p>
+			{% endif %} 
+		</div>
+	</div>
+	
+
+
+{% endblock %}

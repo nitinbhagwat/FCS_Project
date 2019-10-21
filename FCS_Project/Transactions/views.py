@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from Transactions.forms import TransactionForm
+from Transactions.forms import TransactionForm, AddMoneyForm
 from django.http import HttpResponse
 from django.forms import ValidationError
 from Authentication.models import CustomUser
@@ -40,11 +40,17 @@ import pytz
 # 		print ("Error: ", e)
 # 		raise 
 
-
+@login_required
 def verify_otp(request):
 	OTP.generate_OTP(request.user.email)
 	Func_sendmail(request, request.user.email)
 	return redirect('/transactions')
+
+@login_required
+def verify_otp_for_add_money(request):
+	OTP.generate_OTP(request.user.email)
+	Func_sendmail(request, request.user.email)
+	return redirect('/transactions/add-money')
 
 def Func_otp(otp_entered, original_otp, email):
     if otp_entered == original_otp:
@@ -73,7 +79,58 @@ def Func_sendmail(request, rec_id):
     print(message)
     send_mail(subject, message, from_email, to_list, fail_silently=True)
     # send_mail(subject, message, from_email, to_email, fail_silently= True)
+
+
+@transaction.atomic
+def send_money(amount, to_username, from_username, email):
+	try:
+		print ('send money func')
+		to_user = CustomUser.objects.select_for_update().get(username = to_username)
+		to_user.uWalletBalance += amount
+		# to_user.save(commit = False)
+
+		from_user = CustomUser.objects.select_for_update().get(username = from_username)
+		from_user.uWalletBalance -= amount
+		from_user.uTransactionNumber += 1
+		# from_user.save(commit = False)
+
+		to_user.save()
+		from_user.save()
+		if email:
+			OTP.verified_OTP(email)
+	except Exception as e:
+		return HttpResponse (e)
 	
+
+@transaction.atomic
+def deposit(amount, to_username):
+	try:
+		to_user = CustomUser.objects.select_for_update().get(username = to_username)
+		to_user.uWalletBalance += amount
+		to_user.uTransactionNumber += 1
+		to_user.save()
+	except Exception as e:
+		return HttpResponse (e)
+
+
+@transaction.atomic
+def withdraw(amount, from_username, new_role, new_plan):
+	try:
+		from_user = CustomUser.objects.select_for_update().get(username = from_username)
+		if from_user.uWalletBalance >= amount:
+			from_user.uWalletBalance -= amount
+			from_user.uTransactionNumber += 1
+			if new_role:
+				from_user.role = new_role
+				if new_role == 'premium':
+					from_user.premium_type = 'silver'
+			if new_plan:
+				from_user.premium_type = new_plan
+			from_user.save()
+			print ('Done, amount', amount)
+	except Exception as e:
+		return HttpResponse (e)
+
 
 @login_required
 def make_transaction(request):
@@ -91,8 +148,14 @@ def make_transaction(request):
 						return HttpResponse ("Amount should be greater than 0.")
 
 					wallet_balance = request.user.uWalletBalance
+					transaction_count = request.user.uTransactionNumber
+					max_transactions_count = 99999
+					if request.user.role == 'casual':
+						max_transactions_count = 15
+					elif request.user.role == 'premium':
+						max_transactions_count = 30	
 
-					if wallet_balance >= amount:
+					if wallet_balance >= amount and transaction_count < max_transactions_count:
 						
 						# print ("Hello, |" + to_username + "| Amount: ", amount)
 						if CustomUser.objects.exclude(username = request.user.username).filter(username = to_username).exists():
@@ -102,11 +165,9 @@ def make_transaction(request):
 							seekpassword = OTP.objects.filter(email=request.user.email)
 
 							if not otp_entered:
-								print ("User has not entered OTP")
 								return HttpResponse ("You have to enter OTP.")
 
 							if not seekpassword:
-								print ("You have not generate OTP")
 								return HttpResponse ("You have not generate OTP")
 
 
@@ -114,16 +175,11 @@ def make_transaction(request):
 								original_otp = var.onetimepassword
 								time_then = var.generationtime
 							
-							# print("|", otp_entered, "|\n|", original_password, "|")
-							# print (type(otp_entered))
-							# print (type(original_otp))
-
-							# Func_otp(int(otp_entered), int(original_password), request.user.email)
 
 							utc = pytz.UTC
 							if int(otp_entered) == int(original_otp):
 								print ("OTP Verified")
-								table_expired_datetime = time_then + timedelta(minutes = 1)
+								table_expired_datetime = time_then + timedelta(minutes = 10)
 								time_now = datetime.now()
 
 								expired_on = table_expired_datetime.replace(tzinfo = utc)
@@ -134,42 +190,35 @@ def make_transaction(request):
 									return HttpResponse ("OTP time expired. Please generate OTP again and then try again.")
 
 								else: 
-									with transaction.atomic():
-										to_user = CustomUser.objects.select_for_update().get(username = to_username)
-										to_user.uWalletBalance += amount
-										# to_user.save(commit = False)
-
-										from_user = CustomUser.objects.select_for_update().get(username = from_username)
-										from_user.uWalletBalance -= amount
-										# from_user.save(commit = False)
-
-										to_user.save()
-										from_user.save()
-										OTP.verified_OTP(request.user.email)
-
+									exception = send_money(amount, to_username, from_username, request.user.email)
+									if exception:
+										return HttpResponse(exception)
+									form = form.save(commit = False)
+									form.from_username = from_username
+									print (form.from_username)
+									form.save()
 									return redirect('/')
+									# return redirect(request, 'home.html', {'message':'Transaction successful'})
 							else:
 								print ('OTP Incorrect')
 								return HttpResponse ("OTP is not verified.")
 							
 						else:
 							print ("Username doesn't exists OR you have entered your own username.")
+							OTP.verified_OTP(request.user.email)
 							return HttpResponse ("Username doesn't exists")
 							#raise ValidationError(_("This email address is already in use. Please supply a different email address."))
 					
 					else:
-						return HttpResponse ("Not enough balance to process this request.")
+						OTP.verified_OTP(request.user.email)
+						return HttpResponse ("Either you have not enough balance to process this request or you have exceeded your maximum transaction limit.")
 
 
 				except Exception as e:
 					pass
+					OTP.verified_OTP(request.user.email)
 					# print ("Error: ", e)
 					return HttpResponse(e)
-				
-
-
-
-		        
 
 			return HttpResponse(request)
 
@@ -178,6 +227,111 @@ def make_transaction(request):
 			return render (request, "index.html", {'form': form})
 
 	else:
-		pass
-		# return redirect("/users/login")
+		return HttpResponse('You are not authenticated.')
 	
+
+@login_required
+def upgrade_account(request):
+	current_role = request.user.role
+	username = request.user.username
+
+	# user = CustomUser.objects.get(username = username)
+
+	# if not user:
+	# 	return HttpResponse('Technical problem has been occurred. Please try again.')
+
+	amount = 1000
+	new_role = current_role
+
+	if current_role == 'casual':
+		new_role = 'premium'
+		amount = 1000
+	elif current_role == 'premium':
+		new_role = 'commercial'
+		amount = 5000
+
+	transaction_count = request.user.uTransactionNumber
+	max_transactions_count = 99999
+	if current_role == 'casual':
+		max_transactions_count = 15
+	elif current_role == 'premium':
+		max_transactions_count = 30	
+
+	if request.user.uWalletBalance >= amount and transaction_count < max_transactions_count:
+		withdraw(amount, username, new_role, None)
+	else:
+		return HttpResponse ('Either you do not have enough balance to upgrade your account or you cannot make this transaction because limit exceeded.')
+
+	# return HttpResponse ('Your account has been upgraded')
+	return redirect('/')
+
+@login_required
+def add_money_in_wallet(request):
+	if request.user.is_authenticated:
+		if request.method == "POST":
+			form = AddMoneyForm(request.POST)
+
+			if form.is_valid():
+				try:
+					amount = form.cleaned_data['amount']
+
+					if amount <= 0.0:
+						return HttpResponse ("Amount should be greater than 0.")
+
+					transaction_count = request.user.uTransactionNumber
+					max_transactions_count = 99999
+					if request.user.role == 'casual':
+						max_transactions_count = 15
+					elif request.user.role == 'premium':
+						max_transactions_count = 30	
+
+					if transaction_count < max_transactions_count:
+
+						from_username = request.user.username
+						otp_entered = request.POST.get("otp_field", None)
+						seekpassword = OTP.objects.filter(email=request.user.email)
+
+						if not otp_entered:
+							return HttpResponse ("You have to enter OTP.")
+
+						if not seekpassword:
+							return HttpResponse ("You have not generate OTP")
+
+
+						for var in seekpassword:
+							original_otp = var.onetimepassword
+							time_then = var.generationtime
+						
+
+						utc = pytz.UTC
+						if int(otp_entered) == int(original_otp):
+							print ("OTP Verified")
+							table_expired_datetime = time_then + timedelta(minutes = 1)
+							time_now = datetime.now()
+
+							expired_on = table_expired_datetime.replace(tzinfo = utc)
+							checked_on = time_now.replace(tzinfo = utc)
+
+							if expired_on < checked_on:
+								OTP.verified_OTP(request.user.email)
+								return HttpResponse ("OTP time expired. Please generate OTP again and then try again.")
+
+							else: 
+								problem = deposit(amount, request.user.username)
+								if problem:
+									return HttpResponse (problem)
+							return redirect('/')
+						else:
+							return HttpResponse('OTP Incorrect. Please try again.')
+					else:
+						return HttpResponse ("Transaction limit exceeded to your account")	
+				except Exception as e:
+					return HttpResponse(e)				
+			else:
+				return HttpResponse ('Form is invalid')
+
+		else:
+			form  = AddMoneyForm
+			return render (request, "addmoney.html", {'form': form})
+
+
