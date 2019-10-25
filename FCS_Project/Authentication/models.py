@@ -37,17 +37,18 @@ class CustomUser(AbstractUser):
 
 
 class OTP(models.Model):
-	Tid = models.AutoField(primary_key=True)
+	
 	email = models.EmailField(default="")
 	status = models.IntegerField(default=0)
-	onetimepassword = models.IntegerField(default="")
+	onetimepassword = models.IntegerField(default="", primary_key = True)
 	generationtime = models.DateTimeField(default = "")
+	mode = models.IntegerField(default="")
 
 	class Meta:
-		unique_together = (("email", "status"),)
+		unique_together = (("email", "mode"),)
 
 	@classmethod
-	def generate_OTP(cls, current_user_email):
+	def generate_OTP(cls, current_user_email, mode):
 
 		totp = pyotp.TOTP('base32secret3232')
 		password = totp.now()
@@ -55,12 +56,12 @@ class OTP(models.Model):
 		varid = OTP.objects.count()
 		varid = varid+1
 		time_now = datetime.now()
-		varA = OTP(varid, current_user_email, 0, password, time_now)
+		varA = OTP(current_user_email, 0, password, time_now, mode)
 		try:
 			varA.save()
 		except:
 			pass
 
 	@classmethod
-	def verified_OTP(cls, current_user_email):
-		OTP.objects.all().filter(email=current_user_email).delete()
+	def verified_OTP(cls, current_user_email, type):
+		OTP.objects.all().filter(email=current_user_email).filter(mode=type).delete()

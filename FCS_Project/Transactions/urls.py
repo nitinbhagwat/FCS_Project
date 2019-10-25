@@ -11,5 +11,5 @@ urlpatterns = [
     path('add-money/', add_money_in_wallet, name='Add Money'),
     path('connect/', verify_otp, name="verify_otp"),
     # ???? Below
-    path('connect/', verify_otp_for_add_money, name="verify_otp_for_add_money"),
+    path('add-money/connect/', verify_otp_for_add_money, name="verify_otp_for_add_money"),
 ]

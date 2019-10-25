@@ -28,13 +28,30 @@
                 <form   method="POST" role="form" >
                     {% csrf_token %}
 
+                     <table border="1">
+                        <tr>
+                            <th>Groups Type </td>
+                        </tr>
+                        <tr>
+                            <td>Press <b>0</b> for <b>Closed Group</b></td>
+                        </tr>
+                        <tr>
+                            <td>Press <b>1</b> for <b>Open Group</b></td>
+                        </tr>
+                    </table>
+
+                    <br>
+
                     <input type = "text" name = "myText" maxlength = "20" value=""  placeholder="Enter group name" required/>
                     <br>
                     <input type="number" step="1" name = "priceText" value="100"/>
+                    <br>
+                    
+                    <p> Group Type:
+                    <input type="number" max = 1 min = 0 name = "gtype" />
+                    </p>
 
-                <br>
                     <input type="submit" value="Create Group">
-
                 </form>
             </div>
         </div>
@@ -68,9 +85,10 @@
                     </td>
 
                      <td>
-                        <a href="{% url 'groups:group_operations'  operation='join' variable=var1.group_name pk=var1.group_name %}">
-                            <button type ="button"> Join Group </button>
-                        </a>
+                             <form action="{% url 'groups:group_operations'  operation='join' variable=var1.group_name pk=var1.group_name %}" method="POST" >
+                            {% csrf_token %}
+                     <button type ="submit"> Join Group</button>
+                             </form>
                     </td>
 
                 </tr>
@@ -105,9 +123,10 @@
                     </td>
 
                      <td>
-                        <a href="{% url 'groups:group_operations'  operation='accept' variable=var2.group_name pk=var2.member_name %}">
-                            <button type ="button"> Accept Request </button>
-                        </a>
+                         <form action="{% url 'groups:group_operations'  operation='accept' variable=var2.group_name pk=var2.member_name %}" method="POST" >
+                            {% csrf_token %}
+                     <button type ="submit"> Accept Request </button>
+                         </form>
                     </td>
 
                     <td>
@@ -115,9 +134,10 @@
                     </td>
 
                     <td>
-                    <a href="{% url 'groups:group_operations'  operation='reject' variable=var2.group_name pk=var2.member_name %}">
-                            <button type ="button"> Reject Request</button>
-                        </a>
+                        <form action="{% url 'groups:group_operations'  operation='reject' variable=var2.group_name pk=var2.member_name %}" method="POST" >
+                            {% csrf_token %}
+                     <button type ="submit">  Reject Request </button>
+                         </form>
 
                     </td>
 
@@ -151,9 +171,11 @@
                     </td>
 
                      <td>
-                        <a href="{% url 'groups:group_operations'  operation='leave' variable=var3.group_name pk=var3.group_name %}">
-                            <button type ="button"> Leave Group </button>
-                        </a>
+
+                            <form action="{% url 'groups:group_operations'  operation='leave' variable=var3.group_name pk=var3.group_name %}" method="POST" >
+                            {% csrf_token %}
+                     <button type ="submit">  Leave Group </button>
+                         </form>
                     </td>
 
                     <td>
@@ -185,9 +207,11 @@
                                 </td>
 
                                  <td>
-                                    <a href="{% url 'groups:group_operations'  operation='delete' variable=var4.group_name pk=var4.group_name %}">
-                                        <button type ="button"> Delete Group </button>
-                                    </a>
+
+                                      <form action="{% url 'groups:group_operations'  operation='delete' variable=var4.group_name pk=var4.group_name %}" method="POST" >
+                                            {% csrf_token %}
+                                     <button type ="submit">  Delete Group </button>
+                                         </form>
                                 </td>
 
                                 <td>
@@ -229,9 +253,11 @@
         
         
                  <td>
-                    <a href="{% url 'groups:group_operations'  operation='deletemember' variable=var6.group_name pk=var6.member_name %}">
-                        <button type ="button"> Delete Member </button>
-                    </a>
+
+                  <form action="{% url 'groups:group_operations'  operation='deletemember' variable=var6.group_name pk=var6.member_name %}" method="POST" >
+                        {% csrf_token %}
+                 <button type ="submit"> Delete Member </button>
+                     </form>
                 </td>
         
                 {% endif %}
@@ -281,9 +307,11 @@
 
 
                                          <td>
-                                            <a href="{% url 'groups:group_operations'  operation='addmember' variable=var6.group_name pk=var7.username %}">
-                                                <button type ="button"> Add Member </button>
-                                            </a>
+
+                                              <form action="{% url 'groups:group_operations'  operation='addmember' variable=var6.group_name pk=var7.username %}" method="POST" >
+                                                    {% csrf_token %}
+                                             <button type ="submit">  Add Member </button>
+                                                 </form>
                                         </td>
 
                                 {% endif %}
@@ -297,9 +325,6 @@
     {% endfor %}
 
 </table>
-
-</div>
-</div>
 
 <table>
 
@@ -322,9 +347,11 @@
 
 
          <td>
-            <a href="{% url 'groups:group_operations'  operation='addmember' variable=var4.group_name pk=var5.username %}">
-                <button type ="button"> Add Member </button>
-            </a>
+
+              <form action="{% url 'groups:group_operations'  operation='addmember' variable=var4.group_name pk=var5.username %}" method="POST" >
+                        {% csrf_token %}
+                 <button type ="submit"> Add Member </button>
+                     </form>
         </td>
 
         <td>
@@ -336,9 +363,12 @@
     {% endfor %}
 
 
+
 </table>
 
-    
+
+    </div>
+</div>
 
     
 {% endblock %}

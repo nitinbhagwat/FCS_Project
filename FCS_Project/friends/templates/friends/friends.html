@@ -33,11 +33,15 @@
                 <td>
                     <h4 >{{ user.username }}</h4>
                 </td>
-                <td>
-                    <a href="{% url 'friends:change_friends' operation='add' pk=user.username  %}">
-                        <button type ="button"> Add Friend</button>
-                    </a>
-                </td>
+                    <td>
+                         <form action="{% url 'friends:change_friends' operation='add' pk=user.username %}" method="POST" >
+                            {% csrf_token %}
+                     <button type ="submit"> Add Friend</button>
+
+                    </form>
+
+                    </td>
+
             </tr>
 
             {% endfor %}
@@ -61,9 +65,11 @@
                 </td>
 
                 <td>
-                <a href="{% url 'friends:change_friends' operation='accept' pk=friend2.sendername %}">
-                        <button type ="button"> Accept Friend</button>
-                    </a>
+
+                  <form action="{% url 'friends:change_friends' operation='accept' pk=friend2.sendername %}" method="POST" >
+                            {% csrf_token %}
+                     <button type ="submit"> Accept Friend</button>
+                  </form>
 
                 </td>
 
@@ -72,9 +78,10 @@
                 </td>
 
                  <td>
-                <a href="{% url 'friends:change_friends' operation='reject' pk=friend2.sendername %}">
-                        <button type ="button"> Reject Friend</button>
-                    </a>
+                 <form action="{% url 'friends:change_friends' operation='reject' pk=friend2.sendername %}" method="POST" >
+                            {% csrf_token %}
+                     <button type ="submit"> Reject Friend</button>
+                  </form>
 
                 </td>
             </tr>
@@ -100,35 +107,16 @@
                 </td>
 
                 <td>
-                <a href="{% url 'friends:change_friends' operation='remove' pk=friend.recievername  %}">
-                        <button type ="button"> Remove Friend</button>
-                    </a>
+                <form action="{% url 'friends:change_friends' operation='remove' pk=friend.recievername %}" method="POST" >
+                            {% csrf_token %}
+                     <button type ="submit"> Remove Friend</button>
+                  </form>
+
                 </td>
             </tr>
                {% endfor %}
         </table>
     </div>
 </div>
-
-<!-- OTP Functionality!!!
-
-<br><br>
-
-<a href="{% url 'friends:change_friends' operation='generate' pk='kawal'  %}">
-                <button type ="button"> Generate OTP</button>
-</a>
-
-
-<br><br>
-<form   method="POST" role="form" >
-    {% csrf_token %}
-          <input type = "text"
-                 name = "myText"
-                 maxlength = "8" value="" />
-<br>
-
-    <input type="submit" value="Submit">
-
-</form> -->
 
 {% endblock %}

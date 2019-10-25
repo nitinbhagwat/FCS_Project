@@ -42,14 +42,14 @@ import pytz
 
 @login_required
 def verify_otp(request):
-	OTP.generate_OTP(request.user.email)
-	Func_sendmail(request, request.user.email)
+	OTP.generate_OTP(request.user.email, 0)
+	Func_sendmail(request, request.user.email, 0)
 	return redirect('/transactions')
 
 @login_required
 def verify_otp_for_add_money(request):
-	OTP.generate_OTP(request.user.email)
-	Func_sendmail(request, request.user.email)
+	OTP.generate_OTP(request.user.email, 1)
+	Func_sendmail(request, request.user.email, 1)
 	return redirect('/transactions/add-money')
 
 def Func_otp(otp_entered, original_otp, email):
@@ -61,8 +61,8 @@ def Func_otp(otp_entered, original_otp, email):
         return HttpResponse ("OTP is not verified.")
 
 
-def Func_sendmail(request, rec_id):
-    seekpassword1 = OTP.objects.filter(email=request.user.email)
+def Func_sendmail(request, rec_id, type):
+    seekpassword1 = OTP.objects.filter(email=request.user.email).filter(mode = type)
 
     for var1 in seekpassword1:
         send_otp = var1.onetimepassword
@@ -72,7 +72,13 @@ def Func_sendmail(request, rec_id):
     # str2 = send_otp
     # str1.join(str2)
 
-    message = str(send_otp)
+    if type == 0:
+    	str1 = 'For send money: '
+    else:
+    	str1 = 'For add money: '
+
+    message1 = str(send_otp)
+    message = str1 + message1
     from_email = settings.EMAIL_HOST_USER
     to_list = [request.user.email]
 
@@ -82,7 +88,7 @@ def Func_sendmail(request, rec_id):
 
 
 @transaction.atomic
-def send_money(amount, to_username, from_username, email):
+def send_money(amount, to_username, from_username, email, type):
 	try:
 		print ('send money func')
 		to_user = CustomUser.objects.select_for_update().get(username = to_username)
@@ -97,7 +103,7 @@ def send_money(amount, to_username, from_username, email):
 		to_user.save()
 		from_user.save()
 		if email:
-			OTP.verified_OTP(email)
+			OTP.verified_OTP(email, type)
 	except Exception as e:
 		return HttpResponse (e)
 	
@@ -162,7 +168,7 @@ def make_transaction(request):
 							
 							from_username = request.user.username
 							otp_entered = request.POST.get("myText", None)
-							seekpassword = OTP.objects.filter(email=request.user.email)
+							seekpassword = OTP.objects.filter(email=request.user.email).filter(mode = 0)
 
 							if not otp_entered:
 								return HttpResponse ("You have to enter OTP.")
@@ -186,11 +192,11 @@ def make_transaction(request):
 								checked_on = time_now.replace(tzinfo = utc)
 
 								if expired_on < checked_on:
-									OTP.verified_OTP(request.user.email)
+									OTP.verified_OTP(request.user.email, 0)
 									return HttpResponse ("OTP time expired. Please generate OTP again and then try again.")
 
 								else: 
-									exception = send_money(amount, to_username, from_username, request.user.email)
+									exception = send_money(amount, to_username, from_username, request.user.email, 0)
 									if exception:
 										return HttpResponse(exception)
 									form = form.save(commit = False)
@@ -201,24 +207,27 @@ def make_transaction(request):
 									# return redirect(request, 'home.html', {'message':'Transaction successful'})
 							else:
 								print ('OTP Incorrect')
-								return HttpResponse ("OTP is not verified.")
+								# return render (None, 'error_type1.html')
+								return HttpResponse ("OTP is Incorrect.")
 							
 						else:
 							print ("Username doesn't exists OR you have entered your own username.")
-							OTP.verified_OTP(request.user.email)
+							OTP.verified_OTP(request.user.email, 0)
 							return HttpResponse ("Username doesn't exists")
 							#raise ValidationError(_("This email address is already in use. Please supply a different email address."))
 					
 					else:
-						OTP.verified_OTP(request.user.email)
+						OTP.verified_OTP(request.user.email, 0)
 						return HttpResponse ("Either you have not enough balance to process this request or you have exceeded your maximum transaction limit.")
 
 
 				except Exception as e:
 					pass
-					OTP.verified_OTP(request.user.email)
+					OTP.verified_OTP(request.user.email, 0)
 					# print ("Error: ", e)
 					return HttpResponse(e)
+				else:
+					pass
 
 			return HttpResponse(request)
 
@@ -289,7 +298,7 @@ def add_money_in_wallet(request):
 
 						from_username = request.user.username
 						otp_entered = request.POST.get("otp_field", None)
-						seekpassword = OTP.objects.filter(email=request.user.email)
+						seekpassword = OTP.objects.filter(email=request.user.email).filter(mode = 1)
 
 						if not otp_entered:
 							return HttpResponse ("You have to enter OTP.")
@@ -313,16 +322,18 @@ def add_money_in_wallet(request):
 							checked_on = time_now.replace(tzinfo = utc)
 
 							if expired_on < checked_on:
-								OTP.verified_OTP(request.user.email)
+								OTP.verified_OTP(request.user.email, 1)
 								return HttpResponse ("OTP time expired. Please generate OTP again and then try again.")
 
 							else: 
+								OTP.verified_OTP(request.user.email, 1)
 								problem = deposit(amount, request.user.username)
 								if problem:
 									return HttpResponse (problem)
 							return redirect('/')
 						else:
 							return HttpResponse('OTP Incorrect. Please try again.')
+							# return render (None, 'error_type1.html')
 					else:
 						return HttpResponse ("Transaction limit exceeded to your account")	
 				except Exception as e:

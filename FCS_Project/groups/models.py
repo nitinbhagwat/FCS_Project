@@ -1,22 +1,28 @@
 from django.db import models
+from django.http import HttpResponse
+
 from Transactions.views import send_money
 
 
 # Create your models here.
 
+# 0 = closed group
+# 1 = opened group
+
 class Group(models.Model):
     group_name = models.CharField(max_length=20, default="", primary_key=True)
     admin_name = models.CharField(max_length=20, default="")
     price = models.IntegerField(default=0)
+    type = models.IntegerField(default="")
 
     class Meta:
         db_table = "Group"
         unique_together = (("group_name", "admin_name"),)
 
     @classmethod
-    def create(cls, name_entered, admin_name, price_entered):
+    def create(cls, name_entered, admin_name, price_entered, type):
 
-        var1 = Group(name_entered, admin_name, price_entered)
+        var1 = Group(name_entered, admin_name, price_entered, type)
 
         try:
             var1.save()
