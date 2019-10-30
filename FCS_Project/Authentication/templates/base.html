@@ -105,7 +105,6 @@ body {
     <a href="/timeline/user/{{request.user.username}}" class="w3-bar-item w3-button">Timeline</a>
     <a href="/transactions" class="w3-bar-item w3-button">Transactions</a>
     <a href="/groups" class="w3-bar-item w3-button">Groups</a>
-    <a href="/chat/user/test" class="w3-bar-item w3-button">Chat</a>
     <a href="/moneyrequest" class="w3-bar-item w3-button">Request Money</a>
     <a href="/transactions/add-money" class="w3-bar-item w3-button">Add Money </a>
     <a href="{% url 'logout' %}" class="w3-bar-item w3-button">Logout</a>
@@ -126,10 +125,9 @@ body {
 </body>
 </html>
 
-<script src="https://code.jquery.com/jquery-3.1.0.min.js">
+
 {% block script %}
 
 
 
 {% endblock %}
-</script>

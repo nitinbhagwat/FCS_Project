@@ -76,6 +76,7 @@
 
 {% block script %}
 
+<script>
 $(document).ready(function(){
     var username = $(location).attr("href").split('/').reverse()[1];
 
@@ -92,5 +93,6 @@ $(document).ready(function(){
     }
     real_time_fetch();
 });
+</script>
 
 {% endblock %}

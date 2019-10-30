@@ -24,7 +24,13 @@ class CustomUser(AbstractUser):
 	contact = models.IntegerField(blank = True, null = True)
 	# Its a transaction count
 	uTransactionNumber = models.IntegerField(blank = True, null = True, default = 0)
-	uTimelinePrivacy = models.CharField(max_length=20, blank = True, null = True)
+
+	privacy_setting = ( ('only me', 'Only Me'),
+			   ('friends', 'Friends'),
+			   ('global', 'Global'),
+			   )
+
+	uTimelinePrivacy = models.CharField(max_length=20, choices = privacy_setting, default = 'global')
 	uWalletBalance = models.FloatField(default = 500.00)
 	premium_choices = (('silver', 'Silver'),
 						('gold', 'Gold'),

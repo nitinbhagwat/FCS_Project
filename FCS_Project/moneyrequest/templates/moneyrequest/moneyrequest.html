@@ -84,7 +84,7 @@
 
                         <td>
 
-                         <form action="{% url 'moneyrequest:request_friends' operation='accept' pk=var2.sendername money=100  %}" method="POST" >
+                         <form action="{% url 'moneyrequest:request_friends' operation='accept' pk=var2.sendername money=var2.amount  %}" method="POST" >
                             {% csrf_token %}
                             <button type ="submit"> Send Money</button>
                          </form>
@@ -97,7 +97,7 @@
 
                          <td>
 
-                          <form action="{% url 'moneyrequest:request_friends' operation='reject' pk=var2.sendername  money=100  %}" method="POST" >
+                          <form action="{% url 'moneyrequest:request_friends' operation='reject' pk=var2.sendername  money=var2.amount  %}" method="POST" >
                             {% csrf_token %}
                             <button type ="submit"> Reject Request </button>
                          </form>

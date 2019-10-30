@@ -72,7 +72,7 @@ def request_friends(request, operation, pk, money):
                 transaction_obj.to_username = to_username
                 transaction_obj.from_username = from_username
                 transaction_obj.amount = amount
-                exception = send_money(amount, to_username, from_username, None)
+                exception = send_money(amount, to_username, from_username, None, None)
                 if exception:
                     return HttpResponse(exception)
                 else:

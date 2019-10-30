@@ -112,7 +112,20 @@
                      <button type ="submit"> Remove Friend</button>
                   </form>
 
+
                 </td>
+                <td>
+                  <a href="/timeline/user/{{friend.recievername}}">
+                    <button type = "button" style="background-color: dodgerblue; color: white">Post on Timeline</button>
+                  </a>
+                </td>
+                {% if request.user.role == 'premium' or request.user.role == 'commercial' %}
+                <td>
+                  <a href="/chat/user/{{friend.recievername}}">
+                    <button type = "button" style="background-color: green; color: white">Chat with Me</button>
+                  </a>
+                </td>
+                {% endif %}
             </tr>
                {% endfor %}
         </table>
