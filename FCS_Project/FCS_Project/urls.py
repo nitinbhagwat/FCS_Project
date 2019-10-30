@@ -31,5 +31,6 @@ urlpatterns = [
     path('show_friends/', include('friends.urls')),
     path('page/', include('PageApp.urls')),
     path('groups/', include('groups.urls')),
-    path('moneyrequest/', include('moneyrequest.urls'))
+    path('moneyrequest/', include('moneyrequest.urls')),
+    path('groupchat/', include('GroupChatApp.urls'))
 ]

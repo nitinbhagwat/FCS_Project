@@ -19,6 +19,9 @@ def create_page(request):
     except CustomUser.DoesNotExist:
         raise Http404("User does not exist.")
 
+    if request.user.role != 'commercial':
+        raise Http404("You are not a commercial user.")
+
     if request.method == 'POST':
         form = CreatePageForm(request.POST)
         if form.is_valid():
@@ -36,6 +39,8 @@ def show_pages(request, user_name):
     CustomUser = apps.get_model('Authentication', 'CustomUser')
     try:
         user = CustomUser.objects.get(username=user_name)
+        if user.role != 'commercial':
+            raise Http404("User for which you are looking for is not a commercial user.")
     except CustomUser.DoesNotExist:
         raise Http404("User does not exist.")
 

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Group Chat{% endblock %}
+
+{% block link_css %} 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+{% endblock %}  
+
+{% block style %}
+     .card {
+        background-color: #FFFFFF;
+        width: 90%;
+        margin: 10px auto 10px auto;
+
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    }
+    .card-title {
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        background-color: #F5F6F7;
+    }
+    .card-content {
+        padding: 10px 10px 10px 10px;
+    }
+{% endblock %}
+
+
+{% block content %}
+    {% for announcement in announcements reversed %}
+
+        <div class="card">
+            <div class="card-title">
+                <span>{{ announcement.title }}</span>
+                <span style="float: right"> {{ announcement.created_at }} </span>
+            </div>
+            <p class="card-content"> {{ announcement.content}} </p>
+        </div>
+
+
+    {% endfor %}
+
+{% endblock %}

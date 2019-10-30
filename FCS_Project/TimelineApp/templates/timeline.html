@@ -61,7 +61,11 @@
 
         <div class="card">
             <div class="card-content">
-                <img src="imgs/male.PNG" class="icon">
+                {% if post.from_user_gender == 1 %}
+                    <img src="https://drive.google.com/uc?export=view&id=1ONKKhjZDyVaK7w53-h0bW8tQQRmBCa93" class="icon">
+                {% else %}
+                    <img src="https://drive.google.com/uc?export=view&id=1UIWuGoN7HjYRMPfQGSMVHwlj3Al_YU_T" class="icon">
+                {% endif %}
                 <span>{{ post.from_user_name }}</span>
                 <span style="float: right"> {{ post.created_at }} </span>
             </div>
@@ -75,7 +79,6 @@
 {% endblock %}
 
 {% block script %}
-
 <script>
 $(document).ready(function(){
     var username = $(location).attr("href").split('/').reverse()[1];
@@ -94,5 +97,4 @@ $(document).ready(function(){
     real_time_fetch();
 });
 </script>
-
 {% endblock %}

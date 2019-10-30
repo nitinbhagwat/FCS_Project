@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'PageApp', # newly added
     'groups', # newly added
     'moneyrequest', # newly added
+    'GroupChatApp', # newly added
 ]
 
 AUTH_USER_MODEL = 'Authentication.CustomUser'
@@ -100,8 +101,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fcs_db',
-        'USER': 'Ntn',
-        'PASSWORD': 'Ntn@SQL1',
+        'USER': 'root',
+        'PASSWORD': 'ankur',
         'HOST': 'localhost',
         'PORT': '3306',
     }

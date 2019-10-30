@@ -69,7 +69,7 @@ class Joined_group(models.Model):
             to_username = var.admin_name
         from_username = member_name
 
-        exception = send_money (amount, to_username, from_username, None)
+        exception = send_money (amount, to_username, from_username, None, None)
         if exception:
             return HttpResponse (exception)
 
