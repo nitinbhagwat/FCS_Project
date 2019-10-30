@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Transaction{% endblock %}
+
+{% block style %}
+
+	.card {
+	   background-color: #FFFFFF;
+	   width: 95%;
+	   margin: 10px auto 10px auto;
+
+	   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	}
+	.card-content {
+	   padding: 10px 10px 10px 10px;
+	}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="card">
+		<div class="card-content">
+
+<p>You are one step away to become a commercial user !!</p>
+
+    <p> Generate Your OTP:
+            <a href="{% url 'verify_otp_for_upgrade' %}">
+                <button type ="button" style="background-color: #4CAF50; color: white;">Generate</button>
+            </a>
+    </p>
+
+	<ul class="errorlist"><li>Generate your OTP first and check your mail (do not forgot to check your spam folder).</li></ul>
+
+<form method="POST" action="{% url 'upgrading' %}">
+    {% csrf_token %}
+			<p> Enter OTP:
+			<input type = "number" name = "otp_field2" maxlength = "8" value="" required />
+			</p>
+
+			<ul class="errorlist"><li>All fields are required.</li></ul>
+
+			<br>
+
+		  	<button type="submit">Upgrade Account</button>
+</form>
+    </div>
+</div>
+{% endblock %}
