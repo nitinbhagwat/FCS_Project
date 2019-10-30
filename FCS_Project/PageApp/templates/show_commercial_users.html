@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Commercial User List</title>
+</head>
+<body>
+    {% if count == 0 %}
+        <h1>There is no commercial user currently.</h1>
+
+    {% else %}
+        {% for user in commercial_users_name %}
+            <div>
+                <span>{{user}}</span>  <input type="button" onclick="location.href='/page/user/{{user}}';" value="View Commercial Pages" />
+            </div>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

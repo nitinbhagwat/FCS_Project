@@ -101,8 +101,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fcs_db',
-        'USER': 'Ntn',
-        'PASSWORD': 'Ntn@SQL1',
+        'USER': 'root',
+        'PASSWORD': 'ankur',
         'HOST': 'localhost',
         'PORT': '3306',
     }

@@ -166,7 +166,7 @@ def send_money(amount, to_username, from_username, email, type):
         if email:
             OTP.verified_OTP(email, type)
     except Exception as e:
-        return HttpResponse(e)
+        return render (None, 'error_type1.html')
 
 
 @transaction.atomic
@@ -177,7 +177,7 @@ def deposit(amount, to_username):
         to_user.uTransactionNumber += 1
         to_user.save()
     except Exception as e:
-        return HttpResponse(e)
+        return render (None, 'error_type1.html')
 
 
 @transaction.atomic
@@ -196,7 +196,7 @@ def withdraw(amount, from_username, new_role, new_plan):
             from_user.save()
             print('Done, amount', amount)
     except Exception as e:
-        return HttpResponse(e)
+        return render (None, 'error_type1.html')
 
 
 @login_required
@@ -287,7 +287,7 @@ def make_transaction(request):
                     pass
                     OTP.verified_OTP(request.user.email, 0)
                     # print ("Error: ", e)
-                    return HttpResponse(e)
+                    return render (None, 'error_type1.html')
                 else:
                     pass
 
@@ -403,7 +403,7 @@ def add_money_in_wallet(request):
                     else:
                         return HttpResponse("Transaction limit exceeded to your account")
                 except Exception as e:
-                    return HttpResponse(e)
+                    return render (None, 'error_type1.html')
             else:
                 return HttpResponse('Form is invalid')
 

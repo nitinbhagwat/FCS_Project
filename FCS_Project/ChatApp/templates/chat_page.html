@@ -135,9 +135,9 @@
 <!--            <li><a href="#about">About</a></li>-->
             {% for user in chat_to_users %}
                 {% if user != receiver %}
-                    <li><a href="http://localhost:8000/chat/user/{{user}}" name="{{user}}">{{user}}</a></li>
+                    <li><a href="/chat/user/{{user}}" name="{{user}}">{{user}}</a></li>
                 {% else %}
-                    <li><a class="active" href="http://localhost:8000/chat/user/{{user}}" name="{{user}}">{{user}}</a></li>
+                    <li><a class="active" href="/chat/user/{{user}}" name="{{user}}">{{user}}</a></li>
                 {% endif %}
             {% endfor %}
         </ul>

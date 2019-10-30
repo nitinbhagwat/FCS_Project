@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 # For models.
 from .models import Page
 from django.apps import apps
+from django.db.models import Q
 
 from .forms import CreatePageForm
 
@@ -51,3 +52,20 @@ def show_pages(request, user_name):
         print('Post belonging to to_user_name Does not exist.')
 
     return render(request, 'show_pages.html', {'pages':pages})
+
+@login_required
+def show_commercial_user(request):
+    CustomUser = apps.get_model('Authentication', 'CustomUser')
+    users = None
+    try:
+        users = CustomUser.objects.filter(Q(role='commercial'))
+    except:
+        raise Http404("Excpetion Occured.")
+
+    commercial_users_name = []
+    for user in users:
+        commercial_users_name.append(user.username)
+
+    count = len(commercial_users_name)
+
+    return render(request, 'show_commercial_users.html', {'commercial_users_name':commercial_users_name, 'count': count})
