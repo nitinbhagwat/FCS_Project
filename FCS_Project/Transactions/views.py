@@ -349,6 +349,9 @@ def add_money_in_wallet(request):
                 try:
                     amount = form.cleaned_data['amount']
 
+                    if amount > 1000000:
+                        return HttpResponse ("Please enter amount less than 1000000.")
+
                     if amount <= 0.0:
                         return HttpResponse("Amount should be greater than 0.")
 

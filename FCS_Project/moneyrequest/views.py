@@ -33,13 +33,17 @@ def request_view(request):
         elif name_entered == request.user.username:
             return HttpResponse('You cannot request money to yourself')
         else:
-            var1 = func(request, name_entered, price_entered)
+            if CustomUser.objects.exclude(username=request.user.username).filter(username=name_entered).exists():
+                var1 = func(request, name_entered, price_entered)
+            else:
+                return HttpResponse('No such user ')
+
             if var1 == 1:
                 return HttpResponse('Person you are requesting to is not your friend :(')
 
     cansend1 = MoneyRequest.objects.filter(sendername=request.user.username)
     cansend = Friend.objects.filter(sendername=request.user.username).exclude(
-        recievername__in=Subquery(cansend1.values('recievername')))
+        recievername__in=Subquery(cansend1.values('recievername'))).filter(status=1)
 
     requestrecieved = MoneyRequest.objects.filter(recievername=request.user.username)
 

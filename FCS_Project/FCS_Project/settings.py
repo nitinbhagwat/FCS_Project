@@ -101,8 +101,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fcs_db',
-        'USER': 'root',
-        'PASSWORD': 'ankur',
+        'USER': 'Ntn',
+        'PASSWORD': 'Ntn@SQL1',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -152,3 +152,5 @@ LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/users/login'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_HTTPONLY = True
+# SESSION_COOKIE_SECURE = True

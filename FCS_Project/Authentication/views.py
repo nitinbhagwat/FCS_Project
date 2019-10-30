@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from Authentication.forms import ChangePremiumPlanForm
+from Authentication.forms import ChangePremiumPlanForm, UserLoginForm
 from Authentication.models import CustomUser
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+from time import sleep
 # Create your views here.
 
 from django.urls import reverse_lazy
@@ -49,3 +51,39 @@ def change_premium_plan(request):
 	else:
 		form  = ChangePremiumPlanForm
 		return render (request, "changepremiumplan.html", {'form': form})
+
+def login_user(request):
+	print (request.session.get('invalid_login_attempts'))
+	if request.user.username:
+		return HttpResponse ('You are already logged in. Please logout first if you want to login with different user.')
+
+	if request.session.get('invalid_login_attempts') is None:
+		request.session['invalid_login_attempts'] = 0
+		
+	elif request.session.get('invalid_login_attempts') == 3:
+		print ('Sleeping ..')
+		sleep(60)	
+		request.session['invalid_login_attempts'] = 0
+	if request.method == 'POST':
+		form = UserLoginForm(request.POST)
+		login_attempts = request.session.get('invalid_login_attempts', 0)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			password = form.cleaned_data['password']
+			temp_user = authenticate (username = username, password = password)
+			request.session['invalid_login_attempts'] = login_attempts + 1
+			login_attempts = request.session.get('invalid_login_attempts')
+			if login_attempts <= 3:
+				if temp_user is not None:
+					login(request, temp_user)
+					print ('login')
+					request.session['invalid_login_attempts'] = 0
+					return redirect ('/')
+				else:
+					form = UserLoginForm()
+					return render(request, 'registration/login.html', {'message': 'Invalid Login Credentials. Please try again with correct credentials.', 'form': form})
+		else:
+			return render (None, 'error_type1.html')
+	else:
+		form = UserLoginForm()
+	return render (request, 'registration/login.html', {'form': form})

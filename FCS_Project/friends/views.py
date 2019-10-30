@@ -42,7 +42,9 @@ def change_friends(request, operation, pk):
         if request.user.username == pk:
             return HttpResponse("Invalid Request")
 
-        else:
+        if CustomUser.objects.exclude(username=request.user.username).filter(
+                username=pk).exists():
+
             if operation == 'add':
                 Friend.make_friend(request.user.username, pk)
 
@@ -55,7 +57,13 @@ def change_friends(request, operation, pk):
             elif operation == 'reject':
                 Friend.reject_friend(request.user.username, pk)
 
+            else:
+                return render(None, 'error_type1.html')
+
             return redirect('/show_friends')
+
+        else:
+            return render(None, 'error_type1.html')
 
     else:
         return render(None, 'error_type1.html')

@@ -4,6 +4,7 @@
 
 {% block content %}
 <h2>Login</h2>
+<p style="color: red">{{message}}</p>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}

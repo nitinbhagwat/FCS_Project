@@ -65,7 +65,7 @@ def groups_view(request):
     return render(request, 'groups/groups.html',
                   {'group_display1': group_display1, 'recieved_requests1': recieved_requests1, 'mygroups': mygroups,
                    'ownedgroups': ownedgroups, 'extra_info': extra_info, 'manage_info': manage_info, 'manage': manage,
-                   'manage2': manage2})
+                   'manage2': manage2,})
 
 
 def create_group(request, name_entered, price_entered, gtype):
@@ -113,31 +113,139 @@ def group_operations(request, operation, variable, pk):
     store_group = ""
     if request.method == 'POST':
 
+        list_groupnames = []
+        var1 = Group.objects.all()
+
+        list_members = []
+
+        for var2 in var1:
+            list_groupnames.append(var2.group_name)
+
         if operation == 'join':
-            Joined_group.join(request.user.username, pk)
-            store_group = pk
 
-        if operation == 'accept':
-            Joined_group.accept(variable, pk)
+            if pk in list_groupnames:
+                Joined_group.join(request.user.username, pk)
+                store_group = pk
 
-        if operation == 'reject':
-            Joined_group.reject(variable, pk)
+            else:
+                return render(None, 'error_type1.html')
 
-        if operation == 'leave':
-            Joined_group.leave(request.user.username, pk)
+        elif operation == 'accept':
 
-        if operation == 'delete':
-            Joined_group.deletes(pk)
-            Group.deletes(request.user.username, pk)
+            if variable in list_groupnames:
+                if CustomUser.objects.exclude(username=request.user.username).filter(username=pk).exists():
+                    if Joined_group.objects.filter(group_name=variable).filter(member_name=pk).exists():
+                        Joined_group.accept(variable, pk)
+                    else:
+                        return render(None, 'error_type1.html')
+                else:
+                    return render(None, 'error_type1.html')
+            else:
+                return render(None, 'error_type1.html')
 
-        if operation == 'deletemember':
-            Joined_group.deletesmember(variable, pk)
+        elif operation == 'reject':
+            if variable in list_groupnames:
+                if CustomUser.objects.exclude(username=request.user.username).filter(username=pk).exists():
+                    if Joined_group.objects.filter(group_name=variable).filter(member_name=pk).exists():
+                        Joined_group.reject(variable, pk)
 
-        if operation == 'addmember':
-            Joined_group.addmember(variable, pk)
+                    else:
+                        return render(None, 'error_type1.html')
+                else:
+                    return render(None, 'error_type1.html')
+            else:
+                return render(None, 'error_type1.html')
+
+
+
+        elif operation == 'leave':
+            if pk in list_groupnames:
+                Joined_group.leave(request.user.username, pk)
+            else:
+                return render(None, 'error_type1.html')
+
+
+        elif operation == 'delete':
+            if pk in list_groupnames:
+                Joined_group.deletes(pk)
+                Group.deletes(request.user.username, pk)
+            else:
+                return render(None, 'error_type1.html')
+
+        elif operation == 'deletemember':
+            if variable in list_groupnames:
+                if CustomUser.objects.exclude(username=request.user.username).filter(username=pk).exists():
+                    if Joined_group.objects.filter(group_name=variable).filter(member_name=pk).exists():
+                        Joined_group.deletesmember(variable, pk)
+
+                    else:
+                        return render(None, 'error_type1.html')
+                else:
+                    return render(None, 'error_type1.html')
+            else:
+                return render(None, 'error_type1.html')
+
+
+        # elif operation == 'addmember':
+        #     if variable in list_groupnames:
+        #         if CustomUser.objects.exclude(username=request.user.username).filter(username=pk).exists():
+        #             if Joined_group.objects.filter(group_name=variable).filter(member_name=pk).exists():
+        #                 return render(None, 'error_type1.html')
+        #
+        #             else:
+        #                 Joined_group.addmember(variable, pk)
+        #         else:
+        #             return render(None, 'error_type1.html')
+        #     else:
+        #         return render(None, 'error_type1.html')
+        #
+
+        else:
+            return render(None, 'error_type1.html')
 
         return redirect('/groups')
 
     else:
         return render(None, 'error_type1.html')
 
+
+@login_required(login_url="/users/login/")
+def group_addmember(request):
+    if request.method == "POST":
+        groupname = request.POST.get("groupname", None)
+        membername = request.POST.get("membername", None)
+
+        list_groupnames = []
+        list_members = []
+
+        var1 = Group.objects.filter(admin_name=request.user.username)
+
+        var3 = Joined_group.objects.filter(group_name__in=Subquery(var1.values('group_name'))).filter(status=1)
+
+        for var2 in var1:
+            list_groupnames.append(var2.group_name)
+
+        for var4 in var3:
+            list_members.append(var4.member_name)
+
+        if len(groupname) > 0 and len(membername) > 0:
+            if groupname in list_groupnames:
+                if membername not in list_members:
+                    if CustomUser.objects.exclude(username=request.user.username).filter(username=membername).exists():
+
+                        if membername != request.user.username:
+                            Joined_group.addmember(groupname, membername)
+
+                        else:
+                            return HttpResponse("You cannot add yourself :0 ")
+
+                    else:
+                        return HttpResponse("No such user")
+                else:
+                    return HttpResponse("Person is already a member")
+            else:
+                return HttpResponse("You can add members to only groups created by you !")
+        else:
+            return render(None, 'error_type1.html')
+
+    return redirect('/groups')

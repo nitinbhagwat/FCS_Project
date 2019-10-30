@@ -11,7 +11,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
-	class Meta(object):
+	class Meta:
 		model = CustomUser
 		fields = ('username', 'email')
 
@@ -20,4 +20,8 @@ class ChangePremiumPlanForm(forms.ModelForm):
 		model = CustomUser
 		fields = 'premium_type', 
 			
+		
+class UserLoginForm(forms.Form):
+	username = forms.CharField(label='Username', max_length=20)
+	password = forms.CharField(label='Password', widget=forms.PasswordInput, max_length=50)
 		

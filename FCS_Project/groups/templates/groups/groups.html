@@ -44,11 +44,11 @@
 
                     <input type = "text" name = "myText" maxlength = "20" value=""  placeholder="Enter group name" required/>
                     <br>
-                    <input type="number" step="1" name = "priceText" value="100"/>
+                    <input type="number" step="1" name = "priceText" value="100" required />
                     <br>
                     
                     <p> Group Type:
-                    <input type="number" max = 1 min = 0 name = "gtype" />
+                    <input type="number" max = 1 min = 0 name = "gtype" required />
                     </p>
 
                     <input type="submit" value="Create Group">
@@ -236,39 +236,34 @@
         <table>
         
             {% for var5 in manage_info %}
-        
+
             <tr>
                 <td>
                     <h4 >{{ var5.group_name }}</h4>
-        
+
                 </td>
-        
-            </tr>
-            <tr>
-        
-                 {% for var6 in manage_info %}
-                {% if var6.group_name == var5.group_name %}
+
                 <td>
-                    <h4 >{{ var6.member_name }}</h4>
+
                 </td>
-        
+
+                <td>
+                    <h4 >{{ var5.member_name }}</h4>
+                </td>
         
                  <td>
 
-                  <form action="{% url 'groups:group_operations'  operation='deletemember' variable=var6.group_name pk=var6.member_name %}" method="POST" >
+                  <form action="{% url 'groups:group_operations'  operation='deletemember' variable=var5.group_name pk=var5.member_name %}" method="POST" >
                         {% csrf_token %}
                  <button type ="submit"> Delete Member </button>
                      </form>
                 </td>
-        
-                {% endif %}
-                {% endfor %}
-        
+
                 <td>
         
                 </td>
-        
             </tr>
+
         
             {% endfor %}
         
@@ -277,99 +272,28 @@
 </div>
 </div>
 
+{% if ownedgroups %}
 <div class="card">
         <div class="card-content">
            <h3> Add Members To Group </h3>
             <hr>
+        <form method="POST" action="{% url 'groups:group_addmember' %}" >
 
-<table>
+                    {% csrf_token %}
 
-    {% for var5 in manage_info %}
+                    <input type = "text" name = "groupname" maxlength = "10" value=""  placeholder="Enter group name" required/>
+                    <br>
 
-    <tr>
+                   <input type = "text" name = "membername" maxlength = "10" value=""  placeholder="Enter username " required/>
+                    <br>
 
-        {% for var6 in manage_info %}
+                    <input type="submit" value="Add Member">
 
-                {% if var6.group_name == var5.group_name %}
+        </form>
 
-                            {% for var7 in manage %}
-
-                                {% if  var7.username == var6.member_name %}
-
-                                 {% else %}
-
-                                         <td>
-                                        <h4 >{{ var5.group_name }}</h4>
-                                         </td>
-
-                                        <td>
-                                            <h4 >{{ var7.username }}</h4>
-                                        </td>
-
-
-                                         <td>
-
-                                              <form action="{% url 'groups:group_operations'  operation='addmember' variable=var6.group_name pk=var7.username %}" method="POST" >
-                                                    {% csrf_token %}
-                                             <button type ="submit">  Add Member </button>
-                                                 </form>
-                                        </td>
-
-                                {% endif %}
-
-                            {% endfor %}
-                {% endif %}
-    </tr>
-
-        {% endfor %}
-
-    {% endfor %}
-
-</table>
-
-<table>
-
-    {% for var4 in manage2 %}
-
-    <tr>
-        <td>
-            <h4 >{{ var4.group_name }}</h4>
-        </td>
-    </tr>
-
-
-        {% for var5 in manage %}
-    <tr>
-
-        <td>
-            <h4 >{{ var5.username }}</h4>
-        </td>
-
-
-
-         <td>
-
-              <form action="{% url 'groups:group_operations'  operation='addmember' variable=var4.group_name pk=var5.username %}" method="POST" >
-                        {% csrf_token %}
-                 <button type ="submit"> Add Member </button>
-                     </form>
-        </td>
-
-        <td>
-
-        </td>
-
-    </tr>
-    {% endfor %}
-    {% endfor %}
-
-
-
-</table>
-
-
-    </div>
 </div>
+</div>
+{% endif %}
 
     
 {% endblock %}
